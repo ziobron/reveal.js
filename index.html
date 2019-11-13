@@ -4,11 +4,14 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>Modern C++ - Coders School</title>
+
+		<meta name="description" content="C++11, C++14 and C++17 presentation">
+		<meta name="author" content="Lukasz Ziobron">
 
 		<link rel="stylesheet" href="css/reset.css">
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/coders.css" id="theme">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/monokai.css">
@@ -25,8 +28,39 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section>
+					<h1>Modern C++</h1>
+					<h3>C++11, C++14, C++17 features</h3>
+					<p>
+						<small>Created by <a href="https://www.linkedin.com/in/lukaszziobron/">Łukasz Ziobroń</a> and <a href="https://www.linkedin.com/in/kamilszatkowski/">Kamil Szatkowski</a></small>
+					</p>
+					<a href="https://coders.school">
+						<img width="500" data-src="img/coders_school_logo.png" alt="Coders School" class="plain">
+					</a>
+				</section>
+
+				<section>
+					<h2>Agenda</h2>
+					<ol>
+						<li class="fragment fade-in-then-semi-out">Language history</li>
+						<li class="fragment fade-in-then-semi-out">Language core novelties</li>
+						<li class="fragment fade-in-then-semi-out">New modifiers</li>
+						<li class="fragment fade-in-then-semi-out">New constructions</li>
+						<li class="fragment fade-in-then-semi-out">Standard library</li>
+						<li class="fragment fade-in-then-semi-out">Other C++17 novelties</li>
+					</ol>
+					<p style="height: 3em;"></p>
+					<p class="fragment fade-down">
+						<small>
+							<sub>
+								Change theme:
+								<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/coders.css'); return false;">Coders School (default)</a> -
+								<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black</a> -
+								<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a>
+							</sub>
+						</small>
+					</p>
+				</section>
 			</div>
 		</div>
 
@@ -37,6 +71,8 @@
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
+				slideNumber: true,
+				hash: true,
 				dependencies: [
 					{ src: 'plugin/markdown/marked.js' },
 					{ src: 'plugin/markdown/markdown.js' },
