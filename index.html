@@ -1,133 +1,133 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>Modern C++ - Coders School</title>
+        <title>Modern C++ - Coders School</title>
 
-		<meta name="description" content="C++11, C++14 and C++17 presentation">
-		<meta name="author" content="Lukasz Ziobron">
+        <meta name="description" content="C++11, C++14 and C++17 presentation">
+        <meta name="author" content="Lukasz Ziobron">
 
-		<link rel="stylesheet" href="css/reset.css">
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/coders.css" id="theme">
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/coders.css" id="theme">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/monokai.css">
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/monokai.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>
-					<h1>Modern C++</h1>
-					<h3>C++11, C++14, C++17 features</h3>
-					<p>
-						<small>Created by <a href="https://www.linkedin.com/in/lukaszziobron/">Łukasz Ziobroń</a> and <a href="https://www.linkedin.com/in/kamilszatkowski/">Kamil Szatkowski</a></small>
-					</p>
-					<a href="https://coders.school">
-						<img width="500" data-src="img/coders_school_logo.png" alt="Coders School" class="plain">
-					</a>
-				</section>
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>Modern C++</h1>
+                    <h3>C++11, C++14, C++17 features</h3>
+                    <p>
+                        <small>Created by <a href="https://www.linkedin.com/in/lukaszziobron/">Łukasz Ziobroń</a> and <a href="https://www.linkedin.com/in/kamilszatkowski/">Kamil Szatkowski</a></small>
+                    </p>
+                    <a href="https://coders.school">
+                        <img width="500" data-src="img/coders_school_logo.png" alt="Coders School" class="plain">
+                    </a>
+                </section>
 
-				<section>
-					<h2>Agenda</h2>
-					<ol>
-						<li class="fragment fade-in-then-semi-out">Language history</li>
-						<li class="fragment fade-in-then-semi-out">Language core novelties</li>
-							<ul class="fragment fade-in-then-out">
-								<li>static_assert</li>
-								<li>nullptr</li>
-								<li>automatic type deduction - auto, decltype</li>
-							</ul>
-						<li class="fragment fade-in-then-semi-out">New modifiers</li>
-						<li class="fragment fade-in-then-semi-out">New constructions</li>
-						<li class="fragment fade-in-then-semi-out">Standard library</li>
-						<li class="fragment fade-in-then-semi-out">Other C++17 novelties</li>
-					</ol>
-					<p style="height: 3em;"></p>
-					<p class="fragment fade-down">
-						<small>
-							<sub>
-								Change theme:
-								<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/coders.css'); return false;">Coders School (default)</a> -
-								<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black</a> -
-								<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a>
-							</sub>
-						</small>
-					</p>
-				</section>
+                <section>
+                    <h2>Agenda</h2>
+                    <ol>
+                        <li class="fragment fade-in-then-semi-out">Language history</li>
+                        <li class="fragment fade-in-then-semi-out">Language core novelties</li>
+                            <ul class="fragment fade-in-then-out">
+                                <li>static_assert</li>
+                                <li>nullptr</li>
+                                <li>automatic type deduction - auto, decltype</li>
+                            </ul>
+                        <li class="fragment fade-in-then-semi-out">New modifiers</li>
+                        <li class="fragment fade-in-then-semi-out">New constructions</li>
+                        <li class="fragment fade-in-then-semi-out">Standard library</li>
+                        <li class="fragment fade-in-then-semi-out">Other C++17 novelties</li>
+                    </ol>
+                    <p style="height: 3em;"></p>
+                    <p class="fragment fade-down">
+                        <small>
+                            <sub>
+                                Change theme:
+                                <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/coders.css'); return false;">Coders School (default)</a> -
+                                <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black</a> -
+                                <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a>
+                            </sub>
+                        </small>
+                    </p>
+                </section>
 
-				<section>
-					<h2>C++ standards</h2>
-					<p>When C++ was created? <span class="fragment">1979</span></p>
-					<ul>
-						<li class="fragment fade-in-then-semi-out">1998 - first ISO C++ standard - C++98</li>
-						<li class="fragment fade-in-then-semi-out">2003 - TC1 (Technical Corrigendum 1) published as C++03. Bug fixes for C++98</li>
-						<li class="fragment fade-in-then-semi-out">2005 - Technical Report 1 published (std::tr1 namespace)</li>
-						<li class="fragment fade-in-then-semi-out">2011 - ratified C++0x as C++11</li>
-						<li class="fragment fade-in-then-semi-out">2013 - full version of C++1y draft</li>
-						<li class="fragment fade-in-then-semi-out">2014 - C++1y published as C++14</li>
-						<li class="fragment fade-in-then-semi-out">2017 - C++1z published as C++17</li>
-						<li class="fragment fade-in-then-semi-out">2020 - C++2a should be published as C++20</li>
-					</ul>
-				</section>
+                <section>
+                    <h2>C++ standards</h2>
+                    <p>When C++ was created? <span class="fragment">1979</span></p>
+                    <ul>
+                        <li class="fragment fade-in-then-semi-out">1998 - first ISO C++ standard - C++98</li>
+                        <li class="fragment fade-in-then-semi-out">2003 - TC1 (Technical Corrigendum 1) published as C++03. Bug fixes for C++98</li>
+                        <li class="fragment fade-in-then-semi-out">2005 - Technical Report 1 published (std::tr1 namespace)</li>
+                        <li class="fragment fade-in-then-semi-out">2011 - ratified C++0x as C++11</li>
+                        <li class="fragment fade-in-then-semi-out">2013 - full version of C++1y draft</li>
+                        <li class="fragment fade-in-then-semi-out">2014 - C++1y published as C++14</li>
+                        <li class="fragment fade-in-then-semi-out">2017 - C++1z published as C++17</li>
+                        <li class="fragment fade-in-then-semi-out">2020 - C++2a should be published as C++20</li>
+                    </ul>
+                </section>
 
-				<section>
-					<h2>C++ standards</h2>
-					<h3>Compilers support</h3>
-					<p><small><a href="https://gcc.gnu.org/projects/cxx-status.html">gcc</a> - <a href="https://clang.llvm.org/cxx_status.html">clang</a></small></p>
-					<div class="box" style="width: 45%; left: 0;">
-						<h3>C++20</h3>
-						<ul>
-							<li>Full support: not implemented yet</li>
-							<li>Compiler flags: -std=c++2a</li>
-						</ul>
-					</div>
-					<div class="box" style="width: 45%; right: 0;">
-						<h3>C++17</h3>
-						<ul>
-							<li>Full support: gcc7, clang5</li>
-							<li>Compiler flags: -std=c++17, -std=c++1z</li>
-						</ul>
-					</div>
-					<div class="box" style="width: 45%; left: 0; top: 450px">
-						<h3>C++14</h3>
-						<ul>
-							<li>Full support: gcc5, clang3.4</li>
-							<li>Compiler flags: -std=c++14, -std=c++1y</li>
-							<li><u>Enabled by default since gcc6.1</u></li>
-						</ul>
-					</div>
-					<div class="box" style="width: 45%; right: 0; top: 450px">
-						<h3>C++11</h3>
-						<ul>
-							<li>Full support: gcc4.8.1, clang3.3</li>
-							<li>Compiler flags: -std=c++11, -std=c++0x</li>
-						</ul>
-					</div>
-				</section>
+                <section>
+                    <h2>C++ standards</h2>
+                    <h3>Compilers support</h3>
+                    <p><small><a href="https://gcc.gnu.org/projects/cxx-status.html">gcc</a> - <a href="https://clang.llvm.org/cxx_status.html">clang</a></small></p>
+                    <div class="box" style="width: 45%; left: 0;">
+                        <h3>C++20</h3>
+                        <ul>
+                            <li>Full support: not implemented yet</li>
+                            <li>Compiler flags: -std=c++2a</li>
+                        </ul>
+                    </div>
+                    <div class="box" style="width: 45%; right: 0;">
+                        <h3>C++17</h3>
+                        <ul>
+                            <li>Full support: gcc7, clang5</li>
+                            <li>Compiler flags: -std=c++17, -std=c++1z</li>
+                        </ul>
+                    </div>
+                    <div class="box" style="width: 45%; left: 0; top: 450px">
+                        <h3>C++14</h3>
+                        <ul>
+                            <li>Full support: gcc5, clang3.4</li>
+                            <li>Compiler flags: -std=c++14, -std=c++1y</li>
+                            <li><u>Enabled by default since gcc6.1</u></li>
+                        </ul>
+                    </div>
+                    <div class="box" style="width: 45%; right: 0; top: 450px">
+                        <h3>C++11</h3>
+                        <ul>
+                            <li>Full support: gcc4.8.1, clang3.3</li>
+                            <li>Compiler flags: -std=c++11, -std=c++0x</li>
+                        </ul>
+                    </div>
+                </section>
 
-				<section>
-					<!-- left box with navigation -->
-					<div class="box" style="width: 20%; right: 0; top: 10px;">
-						<ul>
-							<li>Introduced in C++11</li>
-							<li>Changes in C++17</li>
-						</ul>
-					</div>
-					<h2><code>static_assert</code></h2>
-					<p>Performs compile-time assertion checking. The message is optional from C++17. Usually used with type traits library.</p>
-					<pre><code class="cpp" data-trim>
+                <section>
+                    <!-- left box with navigation -->
+                    <div class="box" style="width: 20%; right: 0; top: 10px;">
+                        <ul>
+                            <li>Introduced in C++11</li>
+                            <li>Changes in C++17</li>
+                        </ul>
+                    </div>
+                    <h2><code>static_assert</code></h2>
+                    <p>Performs compile-time assertion checking. The message is optional from C++17. Usually used with type traits library.</p>
+                    <pre><code class="cpp" data-trim>
 template  &lt;class T&gt;
 void swap (T& a, T&)
 {
@@ -138,24 +138,24 @@ void swap (T& a, T&)
     b = a;
     a = c;
 }
-					</code></pre>
-					<!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
-				</section>
+                    </code></pre>
+                    <!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
+                </section>
 
-				<section>
-					<section>
-						<!-- left box with navigation -->
-						<h2><code>nullptr</code></h2>
-						<ul>
-							<li>value for pointer that points to nothing</li>
-							<li>more expressive and safer than NULL/0 constant</li>
-							<li>has defined type <code>std::nullptr_t</code></li>
-							<li>solves the problem with overloaded functions taking a pointer or an integer as an argument.</li>
-					</section>
-					<section>
-						<h2><code>nullptr</code></h2>
-						<p>Pointer comparison</p>
-						<pre><code class="cpp" data-trim>
+                <section>
+                    <section>
+                        <!-- left box with navigation -->
+                        <h2><code>nullptr</code></h2>
+                        <ul>
+                            <li>value for pointer that points to nothing</li>
+                            <li>more expressive and safer than NULL/0 constant</li>
+                            <li>has defined type <code>std::nullptr_t</code></li>
+                            <li>solves the problem with overloaded functions taking a pointer or an integer as an argument.</li>
+                    </section>
+                    <section>
+                        <h2><code>nullptr</code></h2>
+                        <p>Pointer comparison</p>
+                        <pre><code class="cpp" data-trim>
 int* p1 = nullptr;
 int* p2 = NULL;
 int* p3 = 0;
@@ -164,19 +164,19 @@ p2 == p1; // true
 p3 == p1; // true
 
 int* p {}; // p is set to nullptr
-						</code></pre>
-					</section>
-					<section>
-						<h2><code>nullptr</code></h2>
-						<p>Overload resolution</p>
-						<pre><code class="cpp" data-trim>
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2><code>nullptr</code></h2>
+                        <p>Overload resolution</p>
+                        <pre><code class="cpp" data-trim>
 void foo(int);
 
 foo(0);         // calls foo(int)
 foo(NULL);      // calls foo(int)
 foo(nullptr);   // compile time error
-						</code></pre>
-						<pre><code class="cpp" data-trim>
+                        </code></pre>
+                        <pre><code class="cpp" data-trim>
 void bar(int);
 void bar(void*);
 void bar(std::nullptr_t);
@@ -184,32 +184,32 @@ void bar(std::nullptr_t);
 bar(0);         // calls bar(int)
 bar(NULL);      // calls bar(int) if NULL is 0, may be ambigous if NULL is 0L
 bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
-						</code></pre>
-						<!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
-					</section>
-				</section>
-		</div>
-		</div>
+                        </code></pre>
+                        <!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
+                    </section>
+                </section>
+        </div>
+        </div>
 
-		<script src="js/reveal.js"></script>
+        <script src="js/reveal.js"></script>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				width: 1200,
-				height: 750,
-				slideNumber: true,
-				hash: true,
-				dependencies: [
-					{ src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true }
-				]
-			});
-		</script>
-	</body>
+        <script>
+            // More info about config & dependencies:
+            // - https://github.com/hakimel/reveal.js#configuration
+            // - https://github.com/hakimel/reveal.js#dependencies
+            Reveal.initialize({
+                width: 1200,
+                height: 750,
+                slideNumber: true,
+                hash: true,
+                dependencies: [
+                    { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+        </script>
+    </body>
 </html>
