@@ -403,19 +403,20 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                             
                             
                             template &lt;typename T1, typename T2&gt;
-                            auto add(T1 a, T2 b) -> decltype (a + b)
+                            auto add(T1 a, T2 b) -> decltype(a + b)
                             {
                                 return a + b;
                             }
                         </code></pre>
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 102px;">
+                            <ul>
+                                <li>Introduced to allow definition of the type returned from lambda functions</li>
+                                <li>From C++14 barely used</li>
+                            </ul>
+                        </div>
                     </section>
                     <section>
                         <h3>Deduction of returned type</h3>
-                        <div class="box" style="width: 20%; right: 0; top: 10px;">
-                            <ul>
-                                <li>Introduced in C++14</li>
-                            </ul>
-                        </div>
                         <pre><code class="cpp" data-trim>
                             auto multiply(int x, int y) {
                                 return x * y;
@@ -435,6 +436,14 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                                 return factorial(n - 1) * n;
                             }
                         </code></pre>
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 102px;">
+                            <ul>
+                                <li>Introduced in C++14</li>
+                                <li>Deduction mechanism is the same as for deduction of variable types</li>
+                                <li>All <code>return</code> instructions must return the same type</li>
+                                <li>Recursion allowed only if recursive function call is not a first <code>return</code> statement
+                            </ul>
+                        </div>
                     </section>
                     <section>
                         <h2>Decltype</h2>
