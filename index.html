@@ -39,7 +39,7 @@
                     </a>
                 </section>
 
-                <section>
+                <!-- section>
                     <h2>Agenda</h2>
                     <ol>
                         <li class="fragment fade-in-then-semi-out">Language history</li>
@@ -65,7 +65,7 @@
                             </sub>
                         </small>
                     </p>
-                </section>
+                </section -->
 
                 <section>
                     <h2>C++ standards</h2>
@@ -119,32 +119,32 @@
 
                 <section>
                     <!-- left box with navigation -->
+                    <h2><code>static_assert</code></h2>
                     <div class="box" style="width: 20%; right: 0; top: 10px;">
                         <ul>
                             <li>Introduced in C++11</li>
-                            <li>Changes in C++17</li>
+                            <li>Changed in C++17</li>
                         </ul>
                     </div>
-                    <h2><code>static_assert</code></h2>
+                    <p><strong>Rationale</strong>: Preventing compilation on user defined conditions (usually specific types)</p>
                     <p>Performs compile-time assertion checking. The message is optional from C++17. Usually used with type traits library.</p>
                     <pre><code class="cpp" data-trim>
-template  &lt;class T&gt;
-void swap (T& a, T&)
-{
-    static_assert(std::is_copy_constructible&lt;T&gt;::value, "Swap requires copying");
-    static_assert(std::is_nothrow_move_constructible&lt;T&gt;::value &&
-                  std::is_nothrow_move_assignable&lt;T&gt;::value);
-    auto c = b;
-    b = a;
-    a = c;
-}
+                        template  &lt;class T&gt;
+                        void swap (T& a, T&)
+                        {
+                            static_assert(std::is_copy_constructible&lt;T&gt;::value, "Swap requires copying");
+                            static_assert(std::is_nothrow_move_constructible&lt;T&gt;::value &&
+                                        std::is_nothrow_move_assignable&lt;T&gt;::value);
+                            auto c = b;
+                            b = a;
+                            a = c;
+                        }
                     </code></pre>
                     <!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
                 </section>
 
-                <section>
+                <!--section>
                     <section>
-                        <!-- left box with navigation -->
                         <h2><code>nullptr</code></h2>
                         <ul>
                             <li>value for pointer that points to nothing</li>
@@ -184,11 +184,270 @@ void bar(std::nullptr_t);
 bar(0);         // calls bar(int)
 bar(NULL);      // calls bar(int) if NULL is 0, may be ambigous if NULL is 0L
 bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
-                        </code></pre>
+                        </code></pre-->
                         <!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
+                    <!--/section>
+                </section -->
+
+                <section>
+                    <h2><code>using</code> alias</h2>
+                    <div class="box" style="width: 20%; right: 0; top: 10px;">
+                        <ul>
+                            <li>Introduced in C++11</li>
+                        </ul>
+                    </div>
+                    <section>
+                        <p><strong>Rationale</strong>: More intuitive alias creation.</p>
+                        <p>A type alias is a name that refers to a previously defined type. It was usually created with typedef.</p>
+                        <pre><code class="cpp" data-trim>
+                            typedef std::ios_base::fmtflags Flags;
+                            Flags fl = std::ios_base::dec;
+
+                            typedef std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt; SocketContainer;
+                            std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt; typedef SocketContainer;  // equal to above
+                        </code></pre>
+                        <p>From C++11 type aliases should be created with <code>using</code> keyword.</p>
+                        <pre><code class="cpp" data-trim>
+                            using Flags = std::ios_base::fmtflags;
+                            Flags fl = std::ios_base::dec;
+
+                            using SocketContainer = std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt;;
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Template alises</h3>
+                        <p>Type alias can be parametrized with templates. It was impossible with typedef.</p>
+                        <pre><code class="cpp" data-trim>
+                            template &lt;typename T&gt;
+                            using StrKeyMap = std::map&lt;std::string, T&gt;;
+
+                            StrKeyMap&lt;int&gt; my_map; // std::map&lt;std::string, int&gt;
+                        </code></pre>
                     </section>
                 </section>
-        </div>
+
+                <section>
+                    <section>
+                        <h2>Scoped <code>enum</code></h2>
+                        <div class="box" style="width: 20%; right: 0; top: 10px;">
+                            <ul>
+                                <li>Introduced in C++11</li>
+                            </ul>
+                        </div>
+                        <p><strong>Rationale</strong>: Stronger and less error-prone enumeration types.</p>
+                        <pre style="width: 40%; position: absolute"><code class="cpp" data-trim>
+                            enum Colors {
+                                RED = 10,
+                                ORANGE,
+                                GREEN
+                            };
+                            Colors a = RED;
+                            int b = GREEN;
+                            
+                            enum Fruits {
+                                ORANGE,
+                                BANANA
+                            };
+
+                            Colors c = ORANGE;  // 11 or 0?        // Hopefully: error: ‘ORANGE’ conflicts with a previous declaration
+                        </code></pre>
+                        <pre class="fragment" style="width: 55%; position: absolute; right: 0"><code class="cpp" data-trim>
+                            enum class Languages {
+                                ENGLISH,
+                                GERMAN,
+                                POLISH
+                            };
+                            Languages a = Languages::ENGLISH;
+                            // Languages b = GERMAN; 
+                            // int c = Languages::ENGLISH;
+                            int d = static_cast&lt;int&gt;(Languages::ENGLISH);
+                        </code></pre>
+                        <div class="box fragment" style="width: 52%; right: 0; top: 480px;">
+                            <ul>
+                                <li>Introduced in C++11</li>
+                                <li>Restricts range of defined constants only to those defined in an enum class</li>
+                                <li>Does not allow implicit conversions, <code>static_cast</code> must be used</li>
+                                <li><code>enum class == enum struct</code></li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                        <h2><code>enum</code> base</h2>
+                        <pre><code class="cpp" data-trim>
+                            #include &lt;iostream&gt;
+                            #include &lt;limits&gt;
+                            
+                            enum Colors { YELLOW = 10, ORANGE };
+                            enum BigValue {
+                                VALUE = std::numeric_limits&lt;long&gt;::max()
+                            };
+                            enum RgbColors : unsigned char {
+                                RED = 0x01,
+                                GREEN = 0x02,
+                                BLUE = 0x04,
+                                // BLACK = 0xFF + 1  // error: enumerator value 256 is outside the range
+                                                     // of underlying type ‘unsigned char’
+                            };
+                            
+                            int main() {
+                                std::cout &lt;&lt; sizeof(Colors) &lt;&lt; std::endl;    // 4 - sizeof(int)
+                                std::cout &lt;&lt; sizeof(BigValue) &lt;&lt; std::endl;  // 8 - sizeof(long)
+                                std::cout &lt;&lt; sizeof(RgbColors) &lt;&lt; std::endl; // 1 - sizeof(unsigned char)
+                                return 0;
+                            }
+                        </code></pre>
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 120px;">
+                            <ul>
+                                <li>Default enum size is <code>sizeof(int)</code></li>
+                                <li><code>Enum</code> underlying type is extended automatically if values greater than <code>int</code> are provided</li>
+                                <li>To save some memory we can define the underlying type using inheritance</li>
+                                <li>A compiler will not allow defining value greater than the defined base can hold</li>
+                                <li>Inheritance work on both <code>enum</code> and <code>enum class</code></li>
+                            </ul>
+                        </div>
+                        <a href="https://ideone.com/e.js/8sR1XK" style="font-size: 0.4em">Change the code in ideone.com</a>
+                    </section>
+                    <section>
+                        <h2><code>enum</code> forward declaration</h2>
+                        <p>For enums with the defined underlying type, it is possible to provide only a forward declaration, if values do not need to be known.</p>
+                        <pre><code class="cpp" data-trim>
+                            enum Colors : unsigned int;
+                            enum struct Languages : unsigned char;
+                        </code></pre>
+                    </section>
+                </section>
+
+                <section>
+                    <h2>Automatic type deduction</h2>
+                    <div class="box" style="width: 20%; right: 0; top: 10px;">
+                        <ul>
+                            <li>Introduced in C++11</li>
+                        </ul>
+                    </div>
+                    <section>
+                        <h3>The <code>auto</code> keyword</h3>
+                        <p><strong>Rationale</strong>: Not important (but strongly defined) types, less typing, less refactoring.</p>
+                        <pre><code class="cpp" data-trim>
+                            auto a;         // error: declaration of ‘auto a’ has no initializer
+                            auto i = 42;    // i is int
+                            auto u = 42u;   // u is unsigned
+                            auto d = 42.0;  // d is double
+                            auto f = 42.0f; // f is float
+                            
+                            double f();
+                            auto r1 = f();  // r1 is double
+
+                            std::set&lt;std::string&gt; collection;
+                            auto it = collection.begin(); // it is std::set&lt;std::string&gt;::iterator
+                        </code></pre>
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 210px;">
+                            <ul>
+                                <li>A compiler can automatically deduce the type of variable during initialization</li>
+                                <li>Deduction is made from a literal, other variable or a function return type</li>
+                                <li>The same rules as for templates deduction are applied</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>Variable modifiers</h3>
+                        <pre><code class="cpp" data-trim>
+                            int func() { return 10; }
+
+                            int main() {
+                                const auto& v1 = func(); // v1 is const int&
+                                const auto v2 = func();  // v2 is const int
+                                // auto& v3 = func();    // error: cannot bind non-const lvalue reference
+                                                         // of type ‘int&’ to an rvalue of type ‘int’
+                                auto v4 = func();        // v4 is int
+                                return 0;
+                            }
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Deduction rules for references</h3>
+                        <pre><code class="cpp" data-trim>
+                            const vector&lt;int&gt; values;
+                            auto v1 = values;   // v1 : vector&lt;int&gt;
+                            auto& v2 = values;  // v2 : const vector&lt;int&gt;
+                            
+                            volatile long clock = 0L;
+                            auto c1 = clock;    // c1 : long
+                            auto& c2 = clock;   // c2 : volatile long
+                                    
+                            Gadget items[10];
+                            auto g1 = items;    // g1 : Gadget*
+                            auto& g2 = items;   // g2 : Gadget(&)[10] - a reference to 
+                                                // the 10-elementh array of Gadgets
+                            
+                            int func(double) { return 10; }
+                            auto f1 = func;     // f1 : int (*)(double)
+                            auto& f2 = func ;   // f2: int (&)(double)
+                        </code></pre>
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 102px;">
+                            <ul>
+                                <li>Reference means the same object with the same properties</li>
+                                <li>Reference preserves cv-qualifiers (const, volatile)</li>
+                                <li>Copy drops cv-qualifiers</li>
+                                <li>Copy of array decays to a pointer</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>Function declaration with arrow</h3>
+                        <pre><code class="cpp" data-trim>
+                            int sum(int a, int b);
+                            auto sum(int a, int b) -> int;
+
+
+                            auto isEven = [](int a) -> bool { return a % 2; }
+                            
+                            
+                            template &lt;typename T1, typename T2&gt;
+                            auto add(T1 a, T2 b) -> decltype (a + b)
+                            {
+                                return a + b;
+                            }
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Deduction of returned type</h3>
+                        <div class="box" style="width: 20%; right: 0; top: 10px;">
+                            <ul>
+                                <li>Introduced in C++14</li>
+                            </ul>
+                        </div>
+                        <pre><code class="cpp" data-trim>
+                            auto multiply(int x, int y) {
+                                return x * y;
+                            }
+
+                            auto get_name(int id) {
+                                if (id == 1)
+                                    return std::string("Gadget");
+                                else if (id == 2)
+                                    return std::string("SuperGadget");
+                                return string("Unknown");
+                            }
+
+                            auto factorial(int n) {
+                                if (n == 1)
+                                    return 1;
+                                return factorial(n - 1) * n;
+                            }
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Decltype</h2>
+                        <p><strong>Rationale</strong>: Deduction provided in contexts where auto is not allowed.</p>
+                    </section>
+                </section>
+
+                <section>
+                    <h2>Move semantics</h2>
+                    <h3>Reference collapsing</h3>
+                    <p><strong>Rationale</strong>: Additional optimisations</p>
+                </section>
+            </div>
         </div>
 
         <script src="js/reveal.js"></script>
