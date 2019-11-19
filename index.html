@@ -120,7 +120,7 @@
                 <section>
                     <!-- left box with navigation -->
                     <h2><code>static_assert</code></h2>
-                    <div class="box" style="width: 20%; right: 0; top: 10px;">
+                    <div class="box" style="width: 20%; right: 0; top: 0;">
                         <ul>
                             <li>Introduced in C++11</li>
                             <li>Changed in C++17</li>
@@ -191,7 +191,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
 
                 <section>
                     <h2><code>using</code> alias</h2>
-                    <div class="box" style="width: 20%; right: 0; top: 10px;">
+                    <div class="box" style="width: 20%; right: 0; top: 0;">
                         <ul>
                             <li>Introduced in C++11</li>
                         </ul>
@@ -217,6 +217,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     <section>
                         <h3>Template alises</h3>
                         <p>Type alias can be parametrized with templates. It was impossible with typedef.</p>
+                        <p>Template aliases cannot be specialized.</p>
                         <pre><code class="cpp" data-trim>
                             template &lt;typename T&gt;
                             using StrKeyMap = std::map&lt;std::string, T&gt;;
@@ -229,7 +230,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                 <section>
                     <section>
                         <h2>Scoped <code>enum</code></h2>
-                        <div class="box" style="width: 20%; right: 0; top: 10px;">
+                        <div class="box" style="width: 20%; right: 0; top: 0;">
                             <ul>
                                 <li>Introduced in C++11</li>
                             </ul>
@@ -262,10 +263,11 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                             // int c = Languages::ENGLISH;
                             int d = static_cast&lt;int&gt;(Languages::ENGLISH);
                         </code></pre>
-                        <div class="box fragment" style="width: 52%; right: 0; top: 480px;">
+                        <div class="box fragment" style="width: 52%; right: 0; top: 460px;">
                             <ul>
                                 <li>Introduced in C++11</li>
                                 <li>Restricts range of defined constants only to those defined in an enum class</li>
+                                <li>Enum values must be accessed with the enum name scope</li>
                                 <li>Does not allow implicit conversions, <code>static_cast</code> must be used</li>
                                 <li><code>enum class == enum struct</code></li>
                             </ul>
@@ -296,7 +298,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                                 return 0;
                             }
                         </code></pre>
-                        <div class="box fragment" style="width: 37%; right: 60px; top: 120px;">
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 100px;">
                             <ul>
                                 <li>Default enum size is <code>sizeof(int)</code></li>
                                 <li><code>Enum</code> underlying type is extended automatically if values greater than <code>int</code> are provided</li>
@@ -310,6 +312,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     <section>
                         <h2><code>enum</code> forward declaration</h2>
                         <p>For enums with the defined underlying type, it is possible to provide only a forward declaration, if values do not need to be known.</p>
+                        <p>There will be no need to recompile source file if new enum values are added.</p>
                         <pre><code class="cpp" data-trim>
                             enum Colors : unsigned int;
                             enum struct Languages : unsigned char;
@@ -319,7 +322,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
 
                 <section>
                     <h2>Automatic type deduction</h2>
-                    <div class="box" style="width: 20%; right: 0; top: 10px;">
+                    <div class="box" style="width: 20%; right: 0; top: 0;">
                         <ul>
                             <li>Introduced in C++11</li>
                         </ul>
@@ -340,7 +343,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                             std::set&lt;std::string&gt; collection;
                             auto it = collection.begin(); // it is std::set&lt;std::string&gt;::iterator
                         </code></pre>
-                        <div class="box fragment" style="width: 37%; right: 60px; top: 210px;">
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 190px;">
                             <ul>
                                 <li>A compiler can automatically deduce the type of variable during initialization</li>
                                 <li>Deduction is made from a literal, other variable or a function return type</li>
@@ -383,7 +386,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                             auto f1 = func;     // f1 : int (*)(double)
                             auto& f2 = func ;   // f2: int (&)(double)
                         </code></pre>
-                        <div class="box fragment" style="width: 37%; right: 60px; top: 102px;">
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 82px;">
                             <ul>
                                 <li>Reference means the same object with the same properties</li>
                                 <li>Reference preserves cv-qualifiers (const, volatile)</li>
@@ -394,21 +397,16 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     </section>
                     <section>
                         <h3>Function declaration with arrow</h3>
-                        <pre><code class="cpp" data-trim>
+                        <pre style="width: 50%; position: absolute; left: 0"><code class="cpp" data-trim>
                             int sum(int a, int b);
                             auto sum(int a, int b) -> int;
 
 
-                            auto isEven = [](int a) -> bool { return a % 2; }
-                            
-                            
-                            template &lt;typename T1, typename T2&gt;
-                            auto add(T1 a, T2 b) -> decltype(a + b)
-                            {
-                                return a + b;
+                            auto isEven = [](int a) -> bool {
+                                return a % 2;
                             }
                         </code></pre>
-                        <div class="box fragment" style="width: 37%; right: 60px; top: 102px;">
+                        <div class="box fragment" style="width: 45%; right: 0;">
                             <ul>
                                 <li>Introduced to allow definition of the type returned from lambda functions</li>
                                 <li>From C++14 barely used</li>
@@ -416,7 +414,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                         </div>
                     </section>
                     <section>
-                        <h3>Deduction of returned type</h3>
+                        <h3>Deduction of a function returned type</h3>
                         <pre><code class="cpp" data-trim>
                             auto multiply(int x, int y) {
                                 return x * y;
@@ -436,7 +434,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                                 return factorial(n - 1) * n;
                             }
                         </code></pre>
-                        <div class="box fragment" style="width: 37%; right: 60px; top: 102px;">
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 82px;">
                             <ul>
                                 <li>Introduced in C++14</li>
                                 <li>Deduction mechanism is the same as for deduction of variable types</li>
@@ -446,15 +444,119 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                         </div>
                     </section>
                     <section>
-                        <h2>Decltype</h2>
+                        <h2><code>decltype</code></h2>
                         <p><strong>Rationale</strong>: Deduction provided in contexts where auto is not allowed.</p>
+                        <p><code>decltype</code> allows a compiler to deduce the type of the variable or expression</p>
+                        <pre><code class="cpp" data-trim>
+                            std::map&lt;std::string, float&gt; collection;
+
+                            decltype(collection) otherCollection;   // otherCollection has type of collection
+                            decltype(collection)::value_type value; // value is float
+                        </code></pre>
+                        
+                        <p>The returned type can be deduced from function parameters with <code>decltype</code> keyword</p> 
+                        <pre><code class="cpp" data-trim>
+                            template &lt;typename T1, typename T2&gt;
+                            auto add(T1 a, T2 b) -> decltype(a + b)
+                            {
+                                return a + b;
+                            }
+                        </code></pre>
+                        <p class="fragment">The <code>decltype((expression))</code> deduction mechanism will be presented after move semantics :)</p>
+                    </section>
+                    <section>
+                        <h2><code>decltype(auto)</code></h2>
+                        <p><code>decltype(auto)</code> deduction mechanism preserves type modifiers (references, const, volatile).</p>
+                        <p><code>auto</code> deduction mechanism does not preserve type modifiers.</p>
+                        <pre><code class="cpp" data-trim>
+                            template&lt;class FunctionType, class... Args&gt;
+                            decltype(auto) Example(FunctionType fun, Args&&... args)
+                            {
+                                return fun(std::forward&lt;Args&gt;(args)...);
+                            }
+                        </code></pre>
                     </section>
                 </section>
 
                 <section>
-                    <h2>Move semantics</h2>
-                    <h3>Reference collapsing</h3>
-                    <p><strong>Rationale</strong>: Additional optimisations</p>
+                    <section>
+                        <h2>Move semantics</h2>
+                    </section>
+                    <section>
+                        <h2>Move semantics</h2>
+                        <h3>Reference collapsing</h3>
+                        <p><strong>Rationale</strong>: Additional optimisations</p>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2><code>decltype((expr))</code> with parentheses</h2>
+                        <pre><code class="cpp" data-trim>
+                            int x;
+                            decltype(x) y = x;      // int y = x;
+                            auto z = x;             // int z = x;
+
+                            int a;
+                            decltype((a)) b = a;    // int& b = a;
+                            auto c = (a);           // int c = a;
+
+                            int&& d();
+                            auto e = d();           // int e = d();
+                            decltype(d()) f = d();  // int&& f = d();
+
+                            decltype(auto) f1() {
+                                int x = 0;
+                                return x;           // returns int
+                            }
+                        
+                            decltype(auto) f2() {
+                                int x = 0;
+                                return (x);         // returns int&
+                            }
+                        </code></pre>
+                        <div class="box fragment" style="width: 42%; right: 60px; top: 100px">
+                            <ul>
+                                <li><code>decltype(x)</code> and <code>decltype((x))</code> are different things, two different keywords could be proposed instead of one.</li>
+                                <li><code>decltype(x)</code> gives the declared type of the identifier <code>x</code></li>
+                                <li>If you pass something that is not an identifier, it determines the type, then appends <code>&</code> for lvalues, <code>&&</code> for xvalues, and nothing for prvalues.</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Type deduction</h2>
+                        <h3>Knowledge check :)</h3>
+                        <pre style="width: 50%; position: absolute; left: 0"><code class="cpp" data-trim>
+                            Gadget g;
+                            auto a = g;
+                            decltype(auto) b = g;
+                            decltype(g) c = g;
+                            decltype((g)) d = g;
+                        </code></pre>
+                        <div class="box fragment" style="width: 45%; right: 0; top: 200px">
+                            <ul>
+                                <li class="fragment">a : Gadget</li>
+                                <li class="fragment">b : Gadget</li>
+                                <li class="fragment">c : Gadget</li>
+                                <li class="fragment">d : Gadget&</li>
+                            </ul>
+                        </div>
+                        <pre class="fragment" style="width: 50%; position: absolute; left: 0; top: 400px"><code class="cpp" data-trim>
+                            Gadget g;
+                            const Gadget& cg = g;
+                            auto e = cg;
+                            decltype(auto) f = cg;
+                            decltype(cg) g = cg;
+                            decltype((cg)) h = cg;
+                        </code></pre>
+                        <div class="box fragment" style="width: 45%; right: 0; top: 400px">
+                            <ul>
+                                <li class="fragment">e : Gadget</li>
+                                <li class="fragment">f : const Gadget&</li>
+                                <li class="fragment">g : const Gadget&</li>
+                                <li class="fragment">h : const Gadget&</li>
+                            </ul>
+                        </div>
+                    </section>
                 </section>
             </div>
         </div>
