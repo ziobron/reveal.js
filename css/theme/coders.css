@@ -12,7 +12,11 @@ section.has-light-background, section.has-light-background h1, section.has-light
  *********************************************/
 body {
   background: #363232;
-  background-color: #363232; }
+  background-color: #363232;
+  background-image: url(../../img/coders_school_logo.png);
+  background-size: 10%;
+  background-repeat: no-repeat; 
+  background-position: 2% 97%; }
 
 .reveal {
   font-family: "Source Sans Pro", Helvetica, sans-serif;
