@@ -481,6 +481,44 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                 <section>
                     <section>
                         <h2>Move semantics</h2>
+                        <p><strong>Rationale:</strong> better optimization by avoiding redundant copies, improved safety by keeping only one instance.</p>
+                        <p>New syntex elements:</p>
+                        <ul>
+                            <li>r-value reference - <code>auto && value</code></li>
+                            <li>move constructor - <code>Class(Class &&)</code></li>
+                            <li>move assignment operator - <code>Class& operator=(Class&&)</code></li>
+                            <li><code>std::move</code> auxilary function</li>
+                            <li><code>std::forward</code> auxilary function</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>r-value and l-value references</h2>
+                        <pre><code class="cpp" data-trim>
+                            struct A {
+                                int a, b;
+                            };
+                            
+                            A foo() {
+                                return {1, 2};
+                            }
+                            
+                            A a;                    // l-value
+                            A & ra = a;             // l-value reference to l-value, OK
+                            A & rb = foo();         // l-value reference to r-value, ERROR
+                            A const& rc = foo();    // const l-value reference to r-value, OK (exception in rules)
+                            
+                            A && rra = a;           // r-value reference to l-value, ERROR
+                            A && rrb = foo();       // r-value reference to r-value, OK
+                            
+                            A const ca{20, 40};
+                            A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
+                        </code></pre>
+                        <div class="box fragment" style="width: 37%; right: 60px; top: 82px;">
+                            <ul>
+                                <li>l-value object has a name and address</li>
+                                <li>r-value object may not have a name or address</li>
+                            </ul>
+                        </div>
                     </section>
                     <section>
                         <h2>Move semantics</h2>
@@ -488,6 +526,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                         <p><strong>Rationale</strong>: Additional optimisations</p>
                     </section>
                 </section>
+
                 <section>
                     <section>
                         <h2><code>decltype((expr))</code> with parentheses</h2>
