@@ -513,10 +513,13 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                             A const ca{20, 40};
                             A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
                         </code></pre>
-                        <div class="box fragment" style="width: 37%; right: 60px; top: 82px;">
+                        <div class="box fragment" style="width: 50%; right: 60px; top: 97px;">
                             <ul>
-                                <li>l-value object has a name and address</li>
-                                <li>r-value object may not have a name or address</li>
+                                <li class="fragment">l-value object has a name and address</li>
+                                <li class="fragment">l-value object is persistent, in the next line it can be accessed by name</li>
+                                <li class="fragment">r-value object does not have a name or address</li>
+                                <li class="fragment">r-value object is temporary, in the next line it will not be accessible</li>
+                                <li class="fragment"® style="color: yellow">r-value reference itself is an l-value object</li>
                             </ul>
                         </div>
                     </section>
