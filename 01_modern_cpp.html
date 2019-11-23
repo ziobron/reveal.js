@@ -91,14 +91,12 @@
 
                 <section>
                     <h2><code>static_assert</code></h2>
-                    <div class="box" style="width: 20%; right: 0; top: 0;">
-                        <ul>
-                            <li>Introduced in C++11</li>
-                            <li>Changed in C++17</li>
-                        </ul>
+                    <div class="box" style="width: 5%; right: 0; top: 0;">
+                        C++11
                     </div>
                     <p><strong>Rationale</strong>: Preventing compilation on user defined conditions (usually specific types)</p>
-                    <p>Performs compile-time assertion checking. The message is optional from C++17. Usually used with type traits library.</p>
+                    <p>Performs compile-time assertion checking. Usually used with type traits library.</p>
+                    <p>The message is optional from C++17.</p>
                     <pre><code class="cpp" data-trim>
                         template  &lt;class T&gt;
                         void swap (T& a, T&)
@@ -162,10 +160,8 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
 
                 <section>
                     <h2><code>using</code> alias</h2>
-                    <div class="box" style="width: 20%; right: 0; top: 0;">
-                        <ul>
-                            <li>Introduced in C++11</li>
-                        </ul>
+                    <div class="box" style="width: 5%; right: 0; top: 0;">
+                        C++11
                     </div>
                     <section>
                         <p><strong>Rationale</strong>: More intuitive alias creation.</p>
@@ -201,10 +197,8 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                 <section>
                     <section>
                         <h2>Scoped <code>enum</code></h2>
-                        <div class="box" style="width: 20%; right: 0; top: 0;">
-                            <ul>
-                                <li>Introduced in C++11</li>
-                            </ul>
+                        <div class="box" style="width: 5%; right: 0; top: 0;">
+                            C++11
                         </div>
                         <p><strong>Rationale</strong>: Stronger and less error-prone enumeration types.</p>
                         <pre style="width: 40%; position: absolute"><code class="cpp" data-trim>
@@ -293,10 +287,8 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
 
                 <section>
                     <h2>Automatic type deduction</h2>
-                    <div class="box" style="width: 20%; right: 0; top: 0;">
-                        <ul>
-                            <li>Introduced in C++11</li>
-                        </ul>
+                    <div class="box" style="width: 5%; right: 0; top: 0;">
+                        C++11
                     </div>
                     <section>
                         <h3>The <code>auto</code> keyword</h3>
@@ -433,7 +425,7 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                                 return a + b;
                             }
                         </code></pre>
-                        <p class="fragment">The <code>decltype((expression))</code> deduction mechanism will be presented after move semantics :)</p>
+                        <p class="fragment">The <code>decltype((expression))</code> will be presented after move semantics :)</p>
                     </section>
                     <section>
                         <h2><code>decltype(auto)</code></h2>
