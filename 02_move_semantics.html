@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-        <title>Modern C++ - Coders School</title>
+        <title>Move semantics - Coders School</title>
 
         <meta name="description" content="C++11, C++14 and C++17 presentation">
         <meta name="author" content="Lukasz Ziobron">
@@ -39,55 +39,175 @@
                 </section>
 
                 <section>
-                    <section>
-                        <h2>Move semantics</h2>
-                        <p><strong>Rationale:</strong> better optimization by avoiding redundant copies, improved safety by keeping only one instance.</p>
-                        <p>New syntex elements:</p>
+                    <h2>Move semantics</h2>
+                    <p><strong>Rationale:</strong> better optimization by avoiding redundant copies, improved safety by keeping only one instance.</p>
+                    <p>New syntax elements:</p>
+                    <ul>
+                        <li><code>auto && value</code> - r-value reference</li>
+                        <li><code>Class(Class &&)</code> - move constructor</li>
+                        <li><code>Class& operator=(Class&&)</code> - move assignment operator</li>
+                        <li><code>std::move</code> auxilary function</li>
+                        <li><code>std::forward</code> auxilary function</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>r-value and l-value references</h2>
+                    <pre><code class="cpp" data-trim>
+struct A {
+    int a, b;
+};
+
+A foo() {
+    return {1, 2};
+}
+
+A a;                    // l-value
+foo();                  // r-value
+A & ra = a;             // l-value reference to l-value, OK
+A & rb = foo();         // l-value reference to r-value, ERROR
+A const& rc = foo();    // const l-value reference to r-value, OK (exception in rules)
+
+A && rra = a;           // r-value reference to l-value, ERROR
+A && rrb = foo();       // r-value reference to r-value, OK
+
+A const ca{20, 40};
+A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
+                    </code></pre>
+                    <div class="box fragment" style="width: 50%; right: 60px; top: 97px;">
                         <ul>
-                            <li>r-value reference - <code>auto && value</code></li>
-                            <li>move constructor - <code>Class(Class &&)</code></li>
-                            <li>move assignment operator - <code>Class& operator=(Class&&)</code></li>
-                            <li><code>std::move</code> auxilary function</li>
-                            <li><code>std::forward</code> auxilary function</li>
+                            <li class="fragment">l-value object has a name and address</li>
+                            <li class="fragment">l-value object is persistent, in the next line it can be accessed by name</li>
+                            <li class="fragment">r-value object does not have a name (usually) or address</li>
+                            <li class="fragment">r-value object is temporary, in the next line it will not be accessible</li>
+                            <li class="fragment">both l-value and r-value references have names, so they are l-value objects!</li>
                         </ul>
-                    </section>
-                    <section>
-                        <h2>r-value and l-value references</h2>
-                        <pre><code class="cpp" data-trim>
-                            struct A {
-                                int a, b;
-                            };
-                            
-                            A foo() {
-                                return {1, 2};
-                            }
-                            
-                            A a;                    // l-value
-                            A & ra = a;             // l-value reference to l-value, OK
-                            A & rb = foo();         // l-value reference to r-value, ERROR
-                            A const& rc = foo();    // const l-value reference to r-value, OK (exception in rules)
-                            
-                            A && rra = a;           // r-value reference to l-value, ERROR
-                            A && rrb = foo();       // r-value reference to r-value, OK
-                            
-                            A const ca{20, 40};
-                            A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
-                        </code></pre>
-                        <div class="box fragment" style="width: 50%; right: 60px; top: 97px;">
-                            <ul>
-                                <li class="fragment">l-value object has a name and address</li>
-                                <li class="fragment">l-value object is persistent, in the next line it can be accessed by name</li>
-                                <li class="fragment">r-value object does not have a name or address</li>
-                                <li class="fragment">r-value object is temporary, in the next line it will not be accessible</li>
-                                <li class="fragment">both l-value and r-value references have names, so they are l-value objects!</li>
-                            </ul>
-                        </div>
-                    </section>
-                    <section>
-                        <h2>Move semantics</h2>
-                        <h3>Reference collapsing</h3>
-                        <p><strong>Rationale</strong>: Additional optimisations</p>
-                    </section>
+                    </div>
+                </section>
+
+                <section data-background-iframe="https://en.cppreference.com/w/cpp/language/value_category" data-background-interactive>
+                    <div class="box" style="position: absolute; width: 45%; right: 0; background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;">
+                        <h2>Value categories in C++</h2>
+                        <ul>
+                            <li>lvalue</li>
+                            <li>prvalue</li>
+                            <li>xvalue</li>
+                            <li>glvalue = lvalue | xvalue</li>
+                            <li>rvalue = prvalue | xvalue</li>
+                        </ul>
+                        <p><a href="https://en.cppreference.com/w/cpp/language/value_category">Full list at cppreference.com</a></p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Usage of move semantics</h2>
+                    <pre><code class="cpp" data-trim>
+template &lt;typename T&gt;
+class Container {
+public:
+    void insert(const T& item);  // inserts a copy of item
+    void insert(T&& item);       // moves item into container
+};
+
+Container&lt;std::string&gt; c;
+std::string str = "text";
+
+c.insert(str);              // lvalue -> insert(const std::string&)
+                            // inserts a copy of str, str is used later
+c.insert(str + str);        // rvalue -> insert(string&&)
+                            // moves temporary into container
+c.insert("text");           // rvalue -> insert(string&&)
+                            // moves temporary into container
+c.insert(std::move(str));   // rvalue -> insert(string&&)
+                            // moves str into container, str is no longer used
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Implementation of move semantics</h2>
+                </section>
+
+                <section>
+                    <h2><code>= default</code> rule</h2>
+                </section>
+
+                <section>
+                    <h2>Rule of 0, 3, 5</h2>
+                </section>
+
+                <section>
+                    <h2>Implementation of <code>std::move()</code> and "universal reference"</h2>
+                    <pre><code class="cpp" data-trim>
+template &lt;typename T&gt;
+T&& move(T&& obj) noexcept {
+    return static_cast&lt;T&&&gt;(obj);
+}
+                    </code></pre>
+                    <ul>
+                        <li class="fragment">This implementation is a bit simplified. Full version later</li>
+                        <li class="fragment"><code>T&&</code> as a template function parameter is not only r-value reference</li>
+                        <li class="fragment">Let's call it "universal reference" (name proposed by Scott Meyers)</li>
+                        <li class="fragment"><code>T&&</code> in templates can bind to l-values and r-values</li>
+                        <li class="fragment"><code>std::move()</code> takes any kind of reference and cast it to r-value reference</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Reference collapsing</h2>
+                    <p>When a template is being instantiated reference collapsing may occur.</p>
+                    <pre><code class="cpp" data-trim>
+template &lt;typename T&gt;
+void f(T& item) {
+    // ...
+}
+
+void f(int& & item);   // passing int& as a param -> f(int&)
+void f(int&& & item);  // passing int&& as a param -> f(int&)
+                    </code></pre>
+                    <p>Reference collapsing rules:</p>
+                    <ul>
+                        <li><code>T& &</code> -> <code>T&</code></li>
+                        <li><code>T&& &</code> -> <code>T&</code></li>
+                        <li><code>T& &&</code> -> <code>T&</code></li>
+                        <li><code>T&& &&</code> -> <code>T&&</code></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Reference type deduction in templates</h2>
+                    <ul>
+                        <li>normal pass - everything is l-value</li>
+                        <li>std::move() - everything is r-value</li>
+                        <li>std::forward() - l-value passed as l-value, r-value passed as r-value</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Template type deduction</h2>
+                    <h3>Knowledge check :)</h3>
+                    <pre><code class="cpp" data-trim>
+template &lt;typename T&gt;
+void copy(T arg) {}
+
+template &lt;typename T&gt;
+void reference(T& arg) {}
+
+template &lt;typename T&gt;
+void universal_reference(T&& arg) {}
+
+int main() {
+    int number = 4;
+    copy(number);       // int
+    copy(5);            // int
+
+    reference(number);  // int&
+    // reference(5);    // candidate function [with T = int] not viable: expects an l-value for 1st argument
+
+    universal_reference(number);            // int&
+    universal_reference(std::move(number)); // int&&
+    universal_reference(5);                 // int&&
+}
+                    </code></pre>
                 </section>
 
                 <section>
