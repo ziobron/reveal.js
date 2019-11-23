@@ -98,16 +98,16 @@
                     <p>Performs compile-time assertion checking. Usually used with type traits library.</p>
                     <p>The message is optional from C++17.</p>
                     <pre><code class="cpp" data-trim>
-                        template  &lt;class T&gt;
-                        void swap (T& a, T&)
-                        {
-                            static_assert(std::is_copy_constructible&lt;T&gt;::value, "Swap requires copying");
-                            static_assert(std::is_nothrow_move_constructible&lt;T&gt;::value &&
-                                        std::is_nothrow_move_assignable&lt;T&gt;::value);
-                            auto c = b;
-                            b = a;
-                            a = c;
-                        }
+template &lt;class T&gt;
+void swap(T& a, T& b)
+{
+    static_assert(std::is_copy_constructible&lt;T&gt;::value, "Swap requires copying");
+    static_assert(std::is_nothrow_move_constructible_v&lt;T&gt; &&
+                  std::is_nothrow_move_assignable_v&lt;T&gt;);
+    auto c = b;
+    b = a;
+    a = c;
+}
                     </code></pre>
                     <!-- <pre><code data-code="./src/static_assert.hpp" data-trim></code></pre> -->
                 </section>
@@ -159,38 +159,54 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                 </section -->
 
                 <section>
-                    <h2><code>using</code> alias</h2>
-                    <div class="box" style="width: 5%; right: 0; top: 0;">
-                        C++11
-                    </div>
                     <section>
+                        <h2><code>using</code> alias</h2>
+                        <div class="box" style="width: 5%; right: 0; top: 0;">
+                            C++11
+                        </div>
                         <p><strong>Rationale</strong>: More intuitive alias creation.</p>
-                        <p>A type alias is a name that refers to a previously defined type. It was usually created with typedef.</p>
-                        <pre><code class="cpp" data-trim>
-                            typedef std::ios_base::fmtflags Flags;
-                            Flags fl = std::ios_base::dec;
-
-                            typedef std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt; SocketContainer;
-                            std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt; typedef SocketContainer;  // equal to above
-                        </code></pre>
+                        <p>A type alias is a name that refers to a previously defined type. It could be created with typedef.</p>
                         <p>From C++11 type aliases should be created with <code>using</code> keyword.</p>
-                        <pre><code class="cpp" data-trim>
-                            using Flags = std::ios_base::fmtflags;
-                            Flags fl = std::ios_base::dec;
+                        <pre><code class="cpp" data-trim data-line-numbers="2,7">
+typedef std::ios_base::fmtflags Flags;
+using Flags = std::ios_base::fmtflags;
+Flags fl = std::ios_base::dec;
 
-                            using SocketContainer = std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt;;
+typedef std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt; SocketContainer;
+std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt; typedef SocketContainer;  // equal to above
+using SocketContainer = std::vector&lt;std::shared_ptr&lt;Socket&gt;&gt;;
                         </code></pre>
                     </section>
                     <section>
                         <h3>Template alises</h3>
-                        <p>Type alias can be parametrized with templates. It was impossible with typedef.</p>
-                        <p>Template aliases cannot be specialized.</p>
                         <pre><code class="cpp" data-trim>
                             template &lt;typename T&gt;
                             using StrKeyMap = std::map&lt;std::string, T&gt;;
 
                             StrKeyMap&lt;int&gt; my_map; // std::map&lt;std::string, int&gt;
                         </code></pre>
+                        <p>Type alias can be parametrized with templates. It was impossible with typedef.</p>
+                        <p>Template aliases cannot be specialized.</p>
+                    </section>
+                    <section>
+                        <h3>Constructors inheritance</h3>
+                        <pre><code class="cpp" data-trim data-line-numbers="7">
+struct A {
+    explicit A(int);
+    int a;
+};
+
+struct B : A {
+    using A::A;  // implicit declaration of B::B(int)
+    B(int, int); // overloaded inherited Base ctor
+};
+                        </code></pre>
+                        <ul style="font-size: 0.8em">
+                            <li class="fragment">Derived class constructors are generated implicitly, only if they are used</li>
+                            <li class="fragment">Derived class constructors take the same arguments as base class constructors</li>
+                            <li class="fragment">Derived class constructor calls according base class constructor</li>
+                            <li class="fragment">Constructor inheritance in a class that adds a new field might be risky - new fields can be uninitialized</li>
+                        </ul>
                     </section>
                 </section>
 
@@ -202,31 +218,31 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                         </div>
                         <p><strong>Rationale</strong>: Stronger and less error-prone enumeration types.</p>
                         <pre style="width: 40%; position: absolute"><code class="cpp" data-trim>
-                            enum Colors {
-                                RED = 10,
-                                ORANGE,
-                                GREEN
-                            };
-                            Colors a = RED;
-                            int b = GREEN;
-                            
-                            enum Fruits {
-                                ORANGE,
-                                BANANA
-                            };
+enum Colors {
+    RED = 10,
+    ORANGE,
+    GREEN
+};
+Colors a = RED;
+int b = GREEN;
 
-                            Colors c = ORANGE;  // 11 or 0?        // Hopefully: error: ‘ORANGE’ conflicts with a previous declaration
+enum Fruits {
+    ORANGE,
+    BANANA
+};
+
+Colors c = ORANGE;  // 11 or 0?        // Hopefully: error: ‘ORANGE’ conflicts with a previous declaration
                         </code></pre>
                         <pre class="fragment" style="width: 55%; position: absolute; right: 0"><code class="cpp" data-trim>
-                            enum class Languages {
-                                ENGLISH,
-                                GERMAN,
-                                POLISH
-                            };
-                            Languages a = Languages::ENGLISH;
-                            // Languages b = GERMAN; 
-                            // int c = Languages::ENGLISH;
-                            int d = static_cast&lt;int&gt;(Languages::ENGLISH);
+enum class Languages {
+    ENGLISH,
+    GERMAN,
+    POLISH
+};
+Languages a = Languages::ENGLISH;
+// Languages b = GERMAN; 
+// int c = Languages::ENGLISH;
+int d = static_cast&lt;int&gt;(Languages::ENGLISH);
                         </code></pre>
                         <div class="box fragment" style="width: 52%; right: 0; top: 460px;">
                             <ul>
@@ -241,27 +257,27 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     <section>
                         <h2><code>enum</code> base</h2>
                         <pre><code class="cpp" data-trim>
-                            #include &lt;iostream&gt;
-                            #include &lt;limits&gt;
-                            
-                            enum Colors { YELLOW = 10, ORANGE };
-                            enum BigValue {
-                                VALUE = std::numeric_limits&lt;long&gt;::max()
-                            };
-                            enum RgbColors : unsigned char {
-                                RED = 0x01,
-                                GREEN = 0x02,
-                                BLUE = 0x04,
-                                // BLACK = 0xFF + 1  // error: enumerator value 256 is outside the range
-                                                     // of underlying type ‘unsigned char’
-                            };
-                            
-                            int main() {
-                                std::cout &lt;&lt; sizeof(Colors) &lt;&lt; std::endl;    // 4 - sizeof(int)
-                                std::cout &lt;&lt; sizeof(BigValue) &lt;&lt; std::endl;  // 8 - sizeof(long)
-                                std::cout &lt;&lt; sizeof(RgbColors) &lt;&lt; std::endl; // 1 - sizeof(unsigned char)
-                                return 0;
-                            }
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+
+enum Colors { YELLOW = 10, ORANGE };
+enum BigValue {
+    VALUE = std::numeric_limits&lt;long&gt;::max()
+};
+enum RgbColors : unsigned char {
+    RED = 0x01,
+    GREEN = 0x02,
+    BLUE = 0x04,
+    // BLACK = 0xFF + 1  // error: enumerator value 256 is outside the range
+                            // of underlying type ‘unsigned char’
+};
+
+int main() {
+    std::cout &lt;&lt; sizeof(Colors) &lt;&lt; std::endl;    // 4 - sizeof(int)
+    std::cout &lt;&lt; sizeof(BigValue) &lt;&lt; std::endl;  // 8 - sizeof(long)
+    std::cout &lt;&lt; sizeof(RgbColors) &lt;&lt; std::endl; // 1 - sizeof(unsigned char)
+    return 0;
+}
                         </code></pre>
                         <div class="box fragment" style="width: 37%; right: 60px; top: 100px;">
                             <ul>
@@ -294,17 +310,17 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                         <h3>The <code>auto</code> keyword</h3>
                         <p><strong>Rationale</strong>: Not important (but strongly defined) types, less typing, less refactoring.</p>
                         <pre><code class="cpp" data-trim>
-                            auto a;         // error: declaration of ‘auto a’ has no initializer
-                            auto i = 42;    // i is int
-                            auto u = 42u;   // u is unsigned
-                            auto d = 42.0;  // d is double
-                            auto f = 42.0f; // f is float
-                            
-                            double f();
-                            auto r1 = f();  // r1 is double
+auto a;         // error: declaration of ‘auto a’ has no initializer
+auto i = 42;    // i is int
+auto u = 42u;   // u is unsigned
+auto d = 42.0;  // d is double
+auto f = 42.0f; // f is float
 
-                            std::set&lt;std::string&gt; collection;
-                            auto it = collection.begin(); // it is std::set&lt;std::string&gt;::iterator
+double f();
+auto r1 = f();  // r1 is double
+
+std::set&lt;std::string&gt; collection;
+auto it = collection.begin(); // it is std::set&lt;std::string&gt;::iterator
                         </code></pre>
                         <div class="box fragment" style="width: 37%; right: 60px; top: 190px;">
                             <ul>
@@ -317,37 +333,37 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     <section>
                         <h3>Variable modifiers</h3>
                         <pre><code class="cpp" data-trim>
-                            int func() { return 10; }
+int func() { return 10; }
 
-                            int main() {
-                                const auto& v1 = func(); // v1 is const int&
-                                const auto v2 = func();  // v2 is const int
-                                // auto& v3 = func();    // error: cannot bind non-const lvalue reference
-                                                         // of type ‘int&’ to an rvalue of type ‘int’
-                                auto v4 = func();        // v4 is int
-                                return 0;
-                            }
+int main() {
+    const auto& v1 = func(); // v1 is const int&
+    const auto v2 = func();  // v2 is const int
+    // auto& v3 = func();    // error: cannot bind non-const lvalue reference
+                                // of type ‘int&’ to an rvalue of type ‘int’
+    auto v4 = func();        // v4 is int
+    return 0;
+}
                         </code></pre>
                     </section>
                     <section>
                         <h3>Deduction rules for references</h3>
                         <pre><code class="cpp" data-trim>
-                            const vector&lt;int&gt; values;
-                            auto v1 = values;   // v1 : vector&lt;int&gt;
-                            auto& v2 = values;  // v2 : const vector&lt;int&gt;
-                            
-                            volatile long clock = 0L;
-                            auto c1 = clock;    // c1 : long
-                            auto& c2 = clock;   // c2 : volatile long
-                                    
-                            Gadget items[10];
-                            auto g1 = items;    // g1 : Gadget*
-                            auto& g2 = items;   // g2 : Gadget(&)[10] - a reference to 
-                                                // the 10-elementh array of Gadgets
-                            
-                            int func(double) { return 10; }
-                            auto f1 = func;     // f1 : int (*)(double)
-                            auto& f2 = func ;   // f2: int (&)(double)
+const vector&lt;int&gt; values;
+auto v1 = values;   // v1 : vector&lt;int&gt;
+auto& v2 = values;  // v2 : const vector&lt;int&gt;
+
+volatile long clock = 0L;
+auto c1 = clock;    // c1 : long
+auto& c2 = clock;   // c2 : volatile long
+        
+Gadget items[10];
+auto g1 = items;    // g1 : Gadget*
+auto& g2 = items;   // g2 : Gadget(&)[10] - a reference to 
+                    // the 10-elementh array of Gadgets
+
+int func(double) { return 10; }
+auto f1 = func;     // f1 : int (*)(double)
+auto& f2 = func ;   // f2: int (&)(double)
                         </code></pre>
                         <div class="box fragment" style="width: 37%; right: 60px; top: 82px;">
                             <ul>
@@ -360,42 +376,40 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     </section>
                     <section>
                         <h3>Function declaration with arrow</h3>
-                        <pre style="width: 50%; position: absolute; left: 0"><code class="cpp" data-trim>
-                            int sum(int a, int b);
-                            auto sum(int a, int b) -> int;
+                        <pre><code class="cpp" data-trim>
+int sum(int a, int b);
+auto sum(int a, int b) -> int;
 
 
-                            auto isEven = [](int a) -> bool {
-                                return a % 2;
-                            }
+auto isEven = [](int a) -> bool {
+    return a % 2;
+}
                         </code></pre>
-                        <div class="box fragment" style="width: 45%; right: 0;">
-                            <ul>
-                                <li>Introduced to allow definition of the type returned from lambda functions</li>
-                                <li>From C++14 barely used</li>
-                            </ul>
-                        </div>
+                        <ul class="fragment">
+                            <li>Introduced to allow definition of the type returned from lambda functions</li>
+                            <li>From C++14 barely used</li>
+                        </ul>
                     </section>
                     <section>
                         <h3>Deduction of a function returned type</h3>
                         <pre><code class="cpp" data-trim>
-                            auto multiply(int x, int y) {
-                                return x * y;
-                            }
+auto multiply(int x, int y) {
+    return x * y;
+}
 
-                            auto get_name(int id) {
-                                if (id == 1)
-                                    return std::string("Gadget");
-                                else if (id == 2)
-                                    return std::string("SuperGadget");
-                                return string("Unknown");
-                            }
+auto get_name(int id) {
+    if (id == 1)
+        return std::string("Gadget");
+    else if (id == 2)
+        return std::string("SuperGadget");
+    return string("Unknown");
+}
 
-                            auto factorial(int n) {
-                                if (n == 1)
-                                    return 1;
-                                return factorial(n - 1) * n;
-                            }
+auto factorial(int n) {
+    if (n == 1)
+        return 1;
+    return factorial(n - 1) * n;
+}
                         </code></pre>
                         <div class="box fragment" style="width: 37%; right: 60px; top: 82px;">
                             <ul>
@@ -409,21 +423,18 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     <section>
                         <h2><code>decltype</code></h2>
                         <p><strong>Rationale</strong>: Deduction provided in contexts where auto is not allowed.</p>
-                        <p><code>decltype</code> allows a compiler to deduce the type of the variable or expression</p>
+                        <p><code>decltype</code> allows a compiler to deduce the type of the variable or expression, eg. the returned type can be deduced from function parameters.</p> 
                         <pre><code class="cpp" data-trim>
-                            std::map&lt;std::string, float&gt; collection;
+std::map&lt;std::string, float&gt; collection;
 
-                            decltype(collection) otherCollection;   // otherCollection has type of collection
-                            decltype(collection)::value_type value; // value is float
-                        </code></pre>
-                        
-                        <p>The returned type can be deduced from function parameters with <code>decltype</code> keyword</p> 
-                        <pre><code class="cpp" data-trim>
-                            template &lt;typename T1, typename T2&gt;
-                            auto add(T1 a, T2 b) -> decltype(a + b)
-                            {
-                                return a + b;
-                            }
+decltype(collection) otherCollection;   // otherCollection has type of collection
+decltype(collection)::value_type value; // value is float
+
+template &lt;typename T1, typename T2&gt;
+auto add(T1 a, T2 b) -> decltype(a + b)  // from C++14 decltype not neccessary
+{
+    return a + b;
+}
                         </code></pre>
                         <p class="fragment">The <code>decltype((expression))</code> will be presented after move semantics :)</p>
                     </section>
