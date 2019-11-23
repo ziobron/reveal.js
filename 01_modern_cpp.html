@@ -39,34 +39,6 @@
                     </a>
                 </section>
 
-                <!-- section>
-                    <h2>Agenda</h2>
-                    <ol>
-                        <li class="fragment fade-in-then-semi-out">Language history</li>
-                        <li class="fragment fade-in-then-semi-out">Language core novelties</li>
-                            <ul class="fragment fade-in-then-out">
-                                <li>static_assert</li>
-                                <li>nullptr</li>
-                                <li>automatic type deduction - auto, decltype</li>
-                            </ul>
-                        <li class="fragment fade-in-then-semi-out">New modifiers</li>
-                        <li class="fragment fade-in-then-semi-out">New constructions</li>
-                        <li class="fragment fade-in-then-semi-out">Standard library</li>
-                        <li class="fragment fade-in-then-semi-out">Other C++17 novelties</li>
-                    </ol>
-                    <p style="height: 3em;"></p>
-                    <p class="fragment fade-down">
-                        <small>
-                            <sub>
-                                Change theme:
-                                <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/coders.css'); return false;">Coders School (default)</a> -
-                                <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black</a> -
-                                <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a>
-                            </sub>
-                        </small>
-                    </p>
-                </section -->
-
                 <section>
                     <h2>C++ standards</h2>
                     <p>When C++ was created? <span class="fragment">1979</span></p>
@@ -118,7 +90,6 @@
                 </section>
 
                 <section>
-                    <!-- left box with navigation -->
                     <h2><code>static_assert</code></h2>
                     <div class="box" style="width: 20%; right: 0; top: 0;">
                         <ul>
@@ -478,128 +449,6 @@ bar(nullptr);   // calls bar(std::nullptr_t) if provided, bar(void*) otherwise
                     </section>
                 </section>
 
-                <section>
-                    <section>
-                        <h2>Move semantics</h2>
-                        <p><strong>Rationale:</strong> better optimization by avoiding redundant copies, improved safety by keeping only one instance.</p>
-                        <p>New syntex elements:</p>
-                        <ul>
-                            <li>r-value reference - <code>auto && value</code></li>
-                            <li>move constructor - <code>Class(Class &&)</code></li>
-                            <li>move assignment operator - <code>Class& operator=(Class&&)</code></li>
-                            <li><code>std::move</code> auxilary function</li>
-                            <li><code>std::forward</code> auxilary function</li>
-                        </ul>
-                    </section>
-                    <section>
-                        <h2>r-value and l-value references</h2>
-                        <pre><code class="cpp" data-trim>
-                            struct A {
-                                int a, b;
-                            };
-                            
-                            A foo() {
-                                return {1, 2};
-                            }
-                            
-                            A a;                    // l-value
-                            A & ra = a;             // l-value reference to l-value, OK
-                            A & rb = foo();         // l-value reference to r-value, ERROR
-                            A const& rc = foo();    // const l-value reference to r-value, OK (exception in rules)
-                            
-                            A && rra = a;           // r-value reference to l-value, ERROR
-                            A && rrb = foo();       // r-value reference to r-value, OK
-                            
-                            A const ca{20, 40};
-                            A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
-                        </code></pre>
-                        <div class="box fragment" style="width: 50%; right: 60px; top: 97px;">
-                            <ul>
-                                <li class="fragment">l-value object has a name and address</li>
-                                <li class="fragment">l-value object is persistent, in the next line it can be accessed by name</li>
-                                <li class="fragment">r-value object does not have a name or address</li>
-                                <li class="fragment">r-value object is temporary, in the next line it will not be accessible</li>
-                                <li class="fragment"® style="color: yellow">r-value reference itself is an l-value object</li>
-                            </ul>
-                        </div>
-                    </section>
-                    <section>
-                        <h2>Move semantics</h2>
-                        <h3>Reference collapsing</h3>
-                        <p><strong>Rationale</strong>: Additional optimisations</p>
-                    </section>
-                </section>
-
-                <section>
-                    <section>
-                        <h2><code>decltype((expr))</code> with parentheses</h2>
-                        <pre><code class="cpp" data-trim>
-                            int x;
-                            decltype(x) y = x;      // int y = x;
-                            auto z = x;             // int z = x;
-
-                            int a;
-                            decltype((a)) b = a;    // int& b = a;
-                            auto c = (a);           // int c = a;
-
-                            int&& d();
-                            auto e = d();           // int e = d();
-                            decltype(d()) f = d();  // int&& f = d();
-
-                            decltype(auto) f1() {
-                                int x = 0;
-                                return x;           // returns int
-                            }
-                        
-                            decltype(auto) f2() {
-                                int x = 0;
-                                return (x);         // returns int&
-                            }
-                        </code></pre>
-                        <div class="box fragment" style="width: 42%; right: 60px; top: 100px">
-                            <ul>
-                                <li><code>decltype(x)</code> and <code>decltype((x))</code> are different things, two different keywords could be proposed instead of one.</li>
-                                <li><code>decltype(x)</code> gives the declared type of the identifier <code>x</code></li>
-                                <li>If you pass something that is not an identifier, it determines the type, then appends <code>&</code> for lvalues, <code>&&</code> for xvalues, and nothing for prvalues.</li>
-                            </ul>
-                        </div>
-                    </section>
-                    <section>
-                        <h2>Type deduction</h2>
-                        <h3>Knowledge check :)</h3>
-                        <pre style="width: 50%; position: absolute; left: 0"><code class="cpp" data-trim>
-                            Gadget g;
-                            auto a = g;
-                            decltype(auto) b = g;
-                            decltype(g) c = g;
-                            decltype((g)) d = g;
-                        </code></pre>
-                        <div class="box fragment" style="width: 45%; right: 0; top: 200px">
-                            <ul>
-                                <li class="fragment">a : Gadget</li>
-                                <li class="fragment">b : Gadget</li>
-                                <li class="fragment">c : Gadget</li>
-                                <li class="fragment">d : Gadget&</li>
-                            </ul>
-                        </div>
-                        <pre class="fragment" style="width: 50%; position: absolute; left: 0; top: 400px"><code class="cpp" data-trim>
-                            Gadget g;
-                            const Gadget& cg = g;
-                            auto e = cg;
-                            decltype(auto) f = cg;
-                            decltype(cg) g = cg;
-                            decltype((cg)) h = cg;
-                        </code></pre>
-                        <div class="box fragment" style="width: 45%; right: 0; top: 400px">
-                            <ul>
-                                <li class="fragment">e : Gadget</li>
-                                <li class="fragment">f : const Gadget&</li>
-                                <li class="fragment">g : const Gadget&</li>
-                                <li class="fragment">h : const Gadget&</li>
-                            </ul>
-                        </div>
-                    </section>
-                </section>
             </div>
         </div>
 

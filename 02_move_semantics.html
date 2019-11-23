@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Modern C++ - Coders School</title>
+
+        <meta name="description" content="C++11, C++14 and C++17 presentation">
+        <meta name="author" content="Lukasz Ziobron">
+
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/coders.css" id="theme">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/monokai.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>Move semantics in C++</h1>
+                    <p>
+                        <small>Created by <a href="https://www.linkedin.com/in/lukaszziobron/">Łukasz Ziobroń</a> and <a href="https://www.linkedin.com/in/kamilszatkowski/">Kamil Szatkowski</a></small>
+                    </p>
+                    <a href="https://coders.school">
+                        <img width="500" data-src="img/coders_school_logo.png" alt="Coders School" class="plain">
+                    </a>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Move semantics</h2>
+                        <p><strong>Rationale:</strong> better optimization by avoiding redundant copies, improved safety by keeping only one instance.</p>
+                        <p>New syntex elements:</p>
+                        <ul>
+                            <li>r-value reference - <code>auto && value</code></li>
+                            <li>move constructor - <code>Class(Class &&)</code></li>
+                            <li>move assignment operator - <code>Class& operator=(Class&&)</code></li>
+                            <li><code>std::move</code> auxilary function</li>
+                            <li><code>std::forward</code> auxilary function</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>r-value and l-value references</h2>
+                        <pre><code class="cpp" data-trim>
+                            struct A {
+                                int a, b;
+                            };
+                            
+                            A foo() {
+                                return {1, 2};
+                            }
+                            
+                            A a;                    // l-value
+                            A & ra = a;             // l-value reference to l-value, OK
+                            A & rb = foo();         // l-value reference to r-value, ERROR
+                            A const& rc = foo();    // const l-value reference to r-value, OK (exception in rules)
+                            
+                            A && rra = a;           // r-value reference to l-value, ERROR
+                            A && rrb = foo();       // r-value reference to r-value, OK
+                            
+                            A const ca{20, 40};
+                            A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
+                        </code></pre>
+                        <div class="box fragment" style="width: 50%; right: 60px; top: 97px;">
+                            <ul>
+                                <li class="fragment">l-value object has a name and address</li>
+                                <li class="fragment">l-value object is persistent, in the next line it can be accessed by name</li>
+                                <li class="fragment">r-value object does not have a name or address</li>
+                                <li class="fragment">r-value object is temporary, in the next line it will not be accessible</li>
+                                <li class="fragment">both l-value and r-value references have names, so they are l-value objects!</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Move semantics</h2>
+                        <h3>Reference collapsing</h3>
+                        <p><strong>Rationale</strong>: Additional optimisations</p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2><code>decltype((expr))</code> with parentheses</h2>
+                        <pre><code class="cpp" data-trim>
+                            int x;
+                            decltype(x) y = x;      // int y = x;
+                            auto z = x;             // int z = x;
+
+                            int a;
+                            decltype((a)) b = a;    // int& b = a;
+                            auto c = (a);           // int c = a;
+
+                            int&& d();
+                            auto e = d();           // int e = d();
+                            decltype(d()) f = d();  // int&& f = d();
+
+                            decltype(auto) f1() {
+                                int x = 0;
+                                return x;           // returns int
+                            }
+                        
+                            decltype(auto) f2() {
+                                int x = 0;
+                                return (x);         // returns int&
+                            }
+                        </code></pre>
+                        <div class="box fragment" style="width: 42%; right: 60px; top: 100px">
+                            <ul>
+                                <li><code>decltype(x)</code> and <code>decltype((x))</code> are different things, two different keywords could be proposed instead of one.</li>
+                                <li><code>decltype(x)</code> gives the declared type of the identifier <code>x</code></li>
+                                <li>If you pass something that is not an identifier, it determines the type, then appends <code>&</code> for lvalues, <code>&&</code> for xvalues, and nothing for prvalues.</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Type deduction</h2>
+                        <h3>Knowledge check :)</h3>
+                        <pre style="width: 50%; position: absolute; left: 0"><code class="cpp" data-trim>
+                            Gadget g;
+                            auto a = g;
+                            decltype(auto) b = g;
+                            decltype(g) c = g;
+                            decltype((g)) d = g;
+                        </code></pre>
+                        <div class="box fragment" style="width: 45%; right: 0; top: 200px">
+                            <ul>
+                                <li class="fragment">a : Gadget</li>
+                                <li class="fragment">b : Gadget</li>
+                                <li class="fragment">c : Gadget</li>
+                                <li class="fragment">d : Gadget&</li>
+                            </ul>
+                        </div>
+                        <pre class="fragment" style="width: 50%; position: absolute; left: 0; top: 400px"><code class="cpp" data-trim>
+                            Gadget g;
+                            const Gadget& cg = g;
+                            auto e = cg;
+                            decltype(auto) f = cg;
+                            decltype(cg) g = cg;
+                            decltype((cg)) h = cg;
+                        </code></pre>
+                        <div class="box fragment" style="width: 45%; right: 0; top: 400px">
+                            <ul>
+                                <li class="fragment">e : Gadget</li>
+                                <li class="fragment">f : const Gadget&</li>
+                                <li class="fragment">g : const Gadget&</li>
+                                <li class="fragment">h : const Gadget&</li>
+                            </ul>
+                        </div>
+                    </section>
+                </section>
+            </div>
+        </div>
+
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info about config & dependencies:
+            // - https://github.com/hakimel/reveal.js#configuration
+            // - https://github.com/hakimel/reveal.js#dependencies
+            Reveal.initialize({
+                width: 1200,
+                height: 750,
+                slideNumber: true,
+                hash: true,
+                dependencies: [
+                    { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+        </script>
+    </body>
+</html>
