@@ -185,7 +185,7 @@ void f(int&& & item);  // passing int&& as a param -> f(int&)
                 <section>
                     <h2>Template type deduction</h2>
                     <h3>Knowledge check :)</h3>
-                    <pre><code class="cpp" data-trim>
+                    <pre><code class="cpp" data-trim data-noescape>
 template &lt;typename T&gt;
 void copy(T arg) {}
 
@@ -197,15 +197,13 @@ void universal_reference(T&& arg) {}
 
 int main() {
     int number = 4;
-    copy(number);       // int
-    copy(5);            // int
-
-    reference(number);  // int&
-    // reference(5);    // candidate function [with T = int] not viable: expects an l-value for 1st argument
-
-    universal_reference(number);            // int&
-    universal_reference(std::move(number)); // int&&
-    universal_reference(5);                 // int&&
+    copy(number);       <span class="fragment">// int</span>
+    copy(5);            <span class="fragment">// int</span>
+    reference(number);  <span class="fragment">// int&</span>
+    reference(5);       <span class="fragment">// candidate function [with T = int] not viable: expects an l-value for 1st argument</span>
+    universal_reference(number);            <span class="fragment">// int&</span>
+    universal_reference(std::move(number)); <span class="fragment">// int&&</span>
+    universal_reference(5);                 <span class="fragment">// int&&</span>
 }
                     </code></pre>
                 </section>
@@ -247,37 +245,21 @@ int main() {
                     <section>
                         <h2>Type deduction</h2>
                         <h3>Knowledge check :)</h3>
-                        <pre style="width: 50%; position: absolute; left: 0"><code class="cpp" data-trim>
+                        <pre><code class="cpp" data-trim data-noescape> 
                             Gadget g;
-                            auto a = g;
-                            decltype(auto) b = g;
-                            decltype(g) c = g;
-                            decltype((g)) d = g;
+                            auto a = g;             <span class="fragment">// a : Gadget</span>
+                            decltype(auto) b = g;   <span class="fragment">// b : Gadget</span>
+                            decltype(g) c = g;      <span class="fragment">// c : Gadget</span>
+                            decltype((g)) d = g;    <span class="fragment">// d : Gadget&</span>
                         </code></pre>
-                        <div class="box fragment" style="width: 45%; right: 0; top: 200px">
-                            <ul>
-                                <li class="fragment">a : Gadget</li>
-                                <li class="fragment">b : Gadget</li>
-                                <li class="fragment">c : Gadget</li>
-                                <li class="fragment">d : Gadget&</li>
-                            </ul>
-                        </div>
-                        <pre class="fragment" style="width: 50%; position: absolute; left: 0; top: 400px"><code class="cpp" data-trim>
+                        <pre class="fragment"><code class="cpp" data-trim data-noescape>
                             Gadget g;
                             const Gadget& cg = g;
-                            auto e = cg;
-                            decltype(auto) f = cg;
-                            decltype(cg) g = cg;
-                            decltype((cg)) h = cg;
+                            auto e = cg;            <span class="fragment">// e : Gadget</span>
+                            decltype(auto) f = cg;  <span class="fragment">// f : const Gadget&</span>
+                            decltype(cg) g = cg;    <span class="fragment">// g : const Gadget&</span>
+                            decltype((cg)) h = cg;  <span class="fragment">// h : const Gadget&</span>
                         </code></pre>
-                        <div class="box fragment" style="width: 45%; right: 0; top: 400px">
-                            <ul>
-                                <li class="fragment">e : Gadget</li>
-                                <li class="fragment">f : const Gadget&</li>
-                                <li class="fragment">g : const Gadget&</li>
-                                <li class="fragment">h : const Gadget&</li>
-                            </ul>
-                        </div>
                     </section>
                 </section>
             </div>
