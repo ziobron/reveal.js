@@ -80,7 +80,6 @@ A const&& rrc = ca;     // const r-value reference to const l-value, ERROR
                             <li class="fragment">l-value object is persistent, in the next line it can be accessed by name</li>
                             <li class="fragment">r-value object does not have a name (usually) or address</li>
                             <li class="fragment">r-value object is temporary, in the next line it will not be accessible</li>
-                            <li class="fragment">both l-value and r-value references have names, so they are l-value objects!</li>
                         </ul>
                     </div>
                 </section>
@@ -124,29 +123,84 @@ c.insert(std::move(str));   // rvalue -> insert(string&&)
                 </section>
 
                 <section>
+                    <h2>Properties of move semantics</h2>
+                    <ul>
+                        <li class="fragment">Move operation transfer all data from the source to the target.</li>
+                        <li class="fragment">It leaves the source object in an unknown, but safe to delete state.</li>
+                        <li class="fragment">"moved-from" objects should never be used. They can only be safely destroyed or, if possible, new resource can be assigned to them (<code>reset()</code>).</li>
+                    </ul>
+                    <pre class="fragment"><code class="cpp" data-trim>
+std::unique_ptr&lt;int&gt; pointer1{new int{5}};
+std::unique_ptr&lt;int&gt; pointer2 = std::move(pointer1);
+*pointer1 = 4;  // Undefined behavior, pointer1 is in moved-from state
+pointer1.reset(new int{20});    // OK
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Implementation of move semantic</h2>
+                    <pre><code class="cpp" data-trim>
+class X : public Base {
+    Member m_;
+
+    X(X&& x) : Base(std::move(x)), m_(std::move(x.m_)) {
+        x.set_to_resourceless_state();
+    }
+
+    X& operator=(X&&) {
+        Base::operator=(std::move(x));
+        m_ = std::move(x.m_);
+        x.set_to_resourceless_state();
+        return *this;
+    }
+};
+                    </code></pre>
+                </section>
+
+                <section>
                     <h2>Implementation of move semantics</h2>
+                    <h3>Task</h3>
+                    <p>Write your own implementation of unique_ptr</p>
+                    <p class="fragment">Hints:</p>
+                    <ul>
+                        <li class="fragment">Template class</li>
+                        <li class="fragment">RAII</li>
+                        <li class="fragment">Copy operations not allowed</li>
+                        <li class="fragment">Move operations allowed</li>
+                        <li class="fragment"><a href="https://en.cppreference.com/w/cpp/memory/unique_ptr">Interface functions</a> - at least:
+                            <ul>
+                                <li><code>T* get()</code></li>
+                                <li><code>T& operator*()</code></li>
+                                <li><code>T* operator->()</code></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </section>
 
                 <section>
-                    <h2><code>= default</code> rule</h2>
-                </section>
+                    <h3>Rule of 3</h3>
+                    <p class="fragment">If you define at least one of: destructor, copy constructor, copy assignemnt operator it means that you are manually managing resources and you should implement them all. It will ensure correctness in every context.</p>
 
-                <section>
-                    <h2>Rule of 0, 3, 5</h2>
+                    <h3 class="fragment">Rule of 5</h3>
+                    <p class="fragment">Rule of 3 can be further optimized by adding move operations - move constructor and move assignment operator. From C++11 use Rule of 5.</p>
+
+                    <h3 class="fragment">Rule of 0</h3>
+                    <p class="fragment">If you use RAII handlers, all the copy and move operations will be generated automatically. Don't implement any of special methods (destructor, move constructor, move assignment operator, copy constructor, copy assignment operator).</p>
+                    <p class="fragment">Eg. when you have unique_ptr as your class member, copy operations of your class will be automatically blocked, but move operations will be supported.</p>
                 </section>
 
                 <section>
                     <h2>Implementation of <code>std::move()</code> and "universal reference"</h2>
                     <pre><code class="cpp" data-trim>
 template &lt;typename T&gt;
-T&& move(T&& obj) noexcept {
-    return static_cast&lt;T&&&gt;(obj);
+typename std::remove_reference&lt;T&gt;::type&& move(T&& obj) noexcept {
+    using ReturnType = std::remove_reference&lt;T&gt;::type&&;
+    return static_cast&lt;ReturnType&gt;(obj);
 }
                     </code></pre>
                     <ul>
-                        <li class="fragment">This implementation is a bit simplified. Full version later</li>
                         <li class="fragment"><code>T&&</code> as a template function parameter is not only r-value reference</li>
-                        <li class="fragment">Let's call it "universal reference" (name proposed by Scott Meyers)</li>
+                        <li class="fragment"><code>T&&</code> is a "forwarding reference" or "universal reference" (name proposed by Scott Meyers)</li>
                         <li class="fragment"><code>T&&</code> in templates can bind to l-values and r-values</li>
                         <li class="fragment"><code>std::move()</code> takes any kind of reference and cast it to r-value reference</li>
                     </ul>
@@ -164,23 +218,85 @@ void f(T& item) {
 void f(int& & item);   // passing int& as a param -> f(int&)
 void f(int&& & item);  // passing int&& as a param -> f(int&)
                     </code></pre>
-                    <p>Reference collapsing rules:</p>
-                    <ul>
+                    <p class="fragment">Reference collapsing rules:</p>
+                    <ul class="fragment">
                         <li><code>T& &</code> -> <code>T&</code></li>
-                        <li><code>T&& &</code> -> <code>T&</code></li>
                         <li><code>T& &&</code> -> <code>T&</code></li>
+                        <li><code>T&& &</code> -> <code>T&</code></li>
                         <li><code>T&& &&</code> -> <code>T&&</code></li>
                     </ul>
                 </section>
 
                 <section>
-                    <h2>Reference type deduction in templates</h2>
-                    <ul>
-                        <li>normal pass - everything is l-value</li>
-                        <li>std::move() - everything is r-value</li>
-                        <li>std::forward() - l-value passed as l-value, r-value passed as r-value</li>
-                    </ul>
+                    <h2>Interface bloat</h2>
+                    <p>Trying to optimize for every possible use case may lead to interface bloat.</p>
+                    <pre><code class="cpp" data-trim>
+class Gadget;
+
+void f(const Gadget&);
+void f(Gadget&);
+void f(Gadget&&);
+
+void use(const Gadget& g) { f(g); }            // calls f(const Gadget&)
+void use(Gadget& g)       { f(g); }            // calls f(Gadget&)
+void use(Gadget&& g)      { f(std::move(g)); } // calls f(Gadget&&)
+
+int main() {
+    const Gadget cg;
+    Gadget g;
+    use(cg);       // calls use(const Gadget&) then calls f(const Gadget&)
+    use(g);        // calls use(Gadget&) then calls f(Gadget&)
+    use(Gadget()); // calls use(Gadget&&) then calls f(Gadget&&)
+}
+                </code></pre>
                 </section>
+
+                <section>
+                    <h2>Perfect forwarding</h2>
+                    <p>Forwarding reference <code>T&&</code> + <code>std::forward()</code> is a solution to interface bloat.</p>
+                    <pre><code class="cpp" data-trim>
+class Gadget;
+
+void f(const Gadget&);
+void f(Gadget&);
+void f(Gadget&&);
+
+template &lt;typename Gadget&gt;
+void use(Gadget&& g) {
+    f(std::forward&lt;Gadget&gt;(g)); // forwards original type to f()
+}
+
+int main() {
+    const Gadget cg;
+    Gadget g;
+    use(cg);       // calls use(const Gadget&) then calls f(const Gadget&)
+    use(g);        // calls use(Gadget&) then calls f(Gadget&)
+    use(Gadget()); // calls use(Gadget&&) then calls f(Gadget&&)
+}
+                </code></pre>
+                </section>
+
+                <section>
+                    <h2><code>std::forward</code></h2>
+                    <p>Forwarding reference (even bind to r-value) is treated as l-value inside template function.</p>
+                    <pre><code class="cpp" data-trim>
+template &lt;typename T&gt;
+void use(T&& t) {           // pass t as l-value unconditionally
+    f(t);   
+}
+
+template &lt;typename T&gt;
+void use(T&& t) {           // pass t as r-value unconditionally
+    f(std::move(t));
+}
+
+template &lt;typename T&gt;
+void use(T&& t) {           // pass t as r-value if it is r-value,
+    f(std::forward(t));     // pass as l-value otherwise
+}
+                    </code></pre>
+                </section>
+
 
                 <section>
                     <h2>Template type deduction</h2>
@@ -270,7 +386,9 @@ int main() {
                         <li class="fragment">Move constructor and move assignment operator</li>
                         <li class="fragment">Rule of 0, 3, 5</li>
                         <li class="fragment"><code>std::move()</code> and <code>std::forward()</code></li>
+                        <li class="fragment">Forwarding reference</li>
                         <li class="fragment">Reference collapsing</li>
+                        <li class="fragment">Perfect forwarding</li>
                         <li class="fragment"><code>decltype((expr))</code></li>
                     </ul>
                 </section>
