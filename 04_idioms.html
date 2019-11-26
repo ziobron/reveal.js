@@ -41,7 +41,118 @@
 
                 <section>
                     <h2>SFINAE</h2>
+                    <p><strong>Rationale</strong>: have a universal interface without letting the caller to decide which implementation should be called. Selection of an optimal implementation is done by a compiler and is coded by a library creators.</p>
+                    <p>SFINAE is a meta-programming technique.</p>
+                    <pre><code class="cpp" data-trim data-line-numbers>
+template&lt;class T&gt;   // SFINAE in C++17
+auto compute(T x) {
+    if constexpr(std::is_scalar_v&lt;T&gt;) {
+        return singleComputation(x);
+    } else {
+        return multipleComputation(x);
+    }
+}
+                    </code></pre>
                 </section>
+                    
+                <section>
+                    <section data-transition="fade">
+                        <h2>Overload resolution</h2>
+                        <pre><code class="cpp" data-trim data-line-numbers>
+void foo(unsigned i) {
+    std::cout &lt;&lt; "unsigned " &lt;&lt; i &lt;&lt; "\n";
+}
+    
+template &lt;typename T&gt;
+void foo(const T& t) {
+    std::cout &lt;&lt; "template " &lt;&lt; t &lt;&lt; "\n";
+}
+                        </code></pre>
+                        <p>What is the result of calling <code>foo(42)</code>?</p>
+                        <p class="fragment"><code>template 42</code></p>
+                        <p class="fragment">Why <code>const int &</code> is a better match than <code>unsigned</code>?</p>
+                        <p class="fragment">Const reference can bind to r-values. No conversion is needed, there is an exact match, so this option is chosen.</p>
+                    </section>
+
+                    <section data-transition="fade" data-transition-speed="slow">
+                        <h2>Overload resolution</h2>
+                        <pre><code class="cpp" data-trim data-line-numbers>
+void foo(unsigned i) {
+    std::cout &lt;&lt; "unsigned " &lt;&lt; i &lt;&lt; "\n";
+}
+
+template &lt;typename T&gt;
+void foo(T& t) {
+    std::cout &lt;&lt; "template " &lt;&lt; t &lt;&lt; "\n";
+}
+                        </code></pre>
+                        <p>What is the result of calling <code>foo(42)</code> now?</p>
+                        <p class="fragment"><code>unsigned 42</code></p>
+                        <p class="fragment">Why <code>unsigned</code> is a better match than <code>int &</code>?</p>
+                        <p class="fragment">Reference (non-const) cannot bind to r-values. There is only one function matching. Implicit conversion from int to unsigned is applied.</p>
+                    </section>
+
+
+                    <section data-transition="fade">
+                        <h2>Overload resolution</h2>
+                        <pre><code class="cpp" data-trim data-line-numbers>
+void foo(unsigned i) {
+    std::cout &lt;&lt; "unsigned " &lt;&lt; i &lt;&lt; "\n";
+}
+
+void foo(double i) {
+    std::cout &lt;&lt; "double " &lt;&lt; i &lt;&lt; "\n";
+}
+                        </code></pre>
+                        <p>What is the result of calling <code>foo(42)</code>?</p>
+                        <p class="fragment"><code>error: call of overloaded ‘foo(int)’ is ambiguous</code></p>
+                        <p class="fragment">Why?</p>
+                        <p class="fragment">Promotion to double and conversion to unsigned are equally viable.</p>
+                    </section>
+                </section>
+
+                <section>
+                    <h2>Simple SFINAE example</h2>
+                    <pre><code class="cpp" data-trim data-line-numbers>
+template &lt;typename T&gt;
+void foo(T arg) {}
+
+template &lt;typename T&gt;
+void foo(T* arg) {}
+                    </code></pre>
+                    <p class="fragment">Calling <code>foo(42)</code> makes a compiler to generate two functions.</p>
+                    <pre class="fragment"><code class="cpp" data-trim data-line-numbers>
+void foo(int arg) {}
+void foo(int* arg) {}
+                    </code></pre>
+                    <p class="fragment">Compiler cannot substitute <code>42</code> as an argument to the second function. It would cause a compilation error. Therefore this overload is discarded.</p>
+                    <p class="fragment">There is no compilation error - this is SFINAE works.</p>
+                    <p class="fragment">If the first funtion will be missing, there would be a compilation error.</p>
+                </section>
+
+                <section>
+                    <h2>SFINAE</h2>
+                    <pre><code class="cpp" data-trim data-line-numbers>
+                    <p>This rule applies during overload resolution of function templates: When substituting the explicitly specified or deduced type for the template parameter fails, the specialization is discarded from the overload set instead of causing a compile error.</p>
+                    <p>This feature is used in template metaprogramming.</p>
+                    </code></pre>
+                </section>
+                    
+                <section data-background-iframe="https://en.cppreference.com/w/cpp/header/type_traits" data-background-interactive>
+                    <div class="box" style="position: absolute; width: 35%; right: 0; background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;">
+                        <h2><code>type_traits</code> library</h2>
+                        <p><a href="https://en.cppreference.com/w/cpp/header/type_traits">&lt;type_traits&gt; on cppreference.com</a></p>
+                    </div>
+                </section>
+                    
+                <section>
+                    <p>Application of SFINAE:</p>
+                    <ul>
+                        <li>member detector</li>
+                        <li></li>
+                    </ul>
+                </section>
+
                     
                 <section>
                     <h2>PIMPL</h2>
