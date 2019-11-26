@@ -306,8 +306,10 @@ int Foo::interface(int value) { return pimpl->doWork(value); }
                         <li class="fragment">More code</li>
                         <li class="fragment">Access overhead - one additional level of indirection</li>
                         <li class="fragment">Space overhead - one pointer in a public interface, optionally additional parameters needs to be passed to functions</li>
-                        <li class="fragment">Memory management overhead - pimpl is placed on the heap</li>
+                        <li class="fragment">Memory management overhead - pimpl is placed on the heap, possible memory fragmentation</li>
+                        <li class="fragment">Const correctness - how to propagate const to private implementation? <a href="https://en.cppreference.com/w/cpp/experimental/propagate_const">std::experimental::propagate_const</a></li>
                     </ul>
+                    <p class="fragment"><a href="https://www.bfilipek.com/2018/01/pimpl.html">Bartek Filipek article on PIMPL</a></p>
                 </section>
 
                 <section data-background="img/coders_school_logo.png" data-background-size="90%">
