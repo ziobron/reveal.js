@@ -117,7 +117,7 @@
                         <li class="fragment fade-in">☎️ Mute your phones</li>
                         <li class="fragment fade-in">🎰 Vegas rule</li>
                         <li class="fragment fade-in">🗣 Discussion, not a lecture</li>
-                        <li class="fragment fade-in">☕️ Addiional breaks on demand</li>
+                        <li class="fragment fade-in">☕️ Additional breaks on demand</li>
                         <li class="fragment fade-in">⌚️ Be on time</li>
                     </ul>
                 </section>
@@ -139,6 +139,7 @@
                 height: 750,
                 slideNumber: true,
                 hash: true,
+                pdfSeparateFragments: false,
                 dependencies: [
                     { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
                     { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },

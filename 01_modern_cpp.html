@@ -478,6 +478,7 @@ auto add(T1 a, T2 b) -> decltype(a + b)  // from C++14 decltype not neccessary
                 height: 750,
                 slideNumber: true,
                 hash: true,
+                pdfSeparateFragments: false,
                 dependencies: [
                     { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
                     { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },

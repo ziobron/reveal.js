@@ -337,6 +337,7 @@ int Foo::interface(int value) { return pimpl->doWork(value); }
                 height: 750,
                 slideNumber: true,
                 hash: true,
+                pdfSeparateFragments: false,
                 dependencies: [
                     { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
                     { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
