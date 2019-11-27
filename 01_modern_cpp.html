@@ -233,7 +233,7 @@ enum Fruits {
 
 Colors c = ORANGE;  // 11 or 0?        // Hopefully: error: ‘ORANGE’ conflicts with a previous declaration
                         </code></pre>
-                        <pre class="fragment" style="width: 55%; position: absolute; right: 0"><code class="cpp" data-trim>
+                        <pre class="fragment" style="width: 56%; position: absolute; right: 0"><code class="cpp" data-trim>
 enum class Languages {
     ENGLISH,
     GERMAN,
@@ -244,7 +244,7 @@ Languages a = Languages::ENGLISH;
 // int c = Languages::ENGLISH;
 int d = static_cast&lt;int&gt;(Languages::ENGLISH);
                         </code></pre>
-                        <div class="box fragment" style="width: 52%; right: 0; top: 460px;">
+                        <div class="box fragment" style="width: 53%; right: 0; top: 470px;">
                             <ul>
                                 <li>Introduced in C++11</li>
                                 <li>Restricts range of defined constants only to those defined in an enum class</li>
@@ -256,36 +256,33 @@ int d = static_cast&lt;int&gt;(Languages::ENGLISH);
                     </section>
                     <section>
                         <h2><code>enum</code> base</h2>
-                        <pre><code class="cpp" data-trim>
+                        <pre><code class="cpp" data-trim data-noescape>
 #include &lt;iostream&gt;
 #include &lt;limits&gt;
 
-enum Colors { YELLOW = 10, ORANGE };
-enum BigValue {
-    VALUE = std::numeric_limits&lt;long&gt;::max()
-};
-enum RgbColors : unsigned char {
+enum Colors   { YELLOW = 10, ORANGE };
+enum BigValue { VALUE = std::numeric_limits&lt;long&gt;::max() };
+<span class="fragment">enum RgbColors : unsigned char {
     RED = 0x01,
     GREEN = 0x02,
     BLUE = 0x04,
-    // BLACK = 0xFF + 1  // error: enumerator value 256 is outside the range
-                            // of underlying type ‘unsigned char’
-};
-
+    // BLACK = 0xFF + 1  // error: enumerator value 256 is outside
+};                       // the range of underlying type ‘unsigned char’
+</span>
 int main() {
     std::cout &lt;&lt; sizeof(Colors) &lt;&lt; std::endl;    // 4 - sizeof(int)
     std::cout &lt;&lt; sizeof(BigValue) &lt;&lt; std::endl;  // 8 - sizeof(long)
-    std::cout &lt;&lt; sizeof(RgbColors) &lt;&lt; std::endl; // 1 - sizeof(unsigned char)
+<span class="fragment">    std::cout &lt;&lt; sizeof(RgbColors) &lt;&lt; std::endl; // 1 - sizeof(unsigned char)</span>
     return 0;
 }
                         </code></pre>
                         <div class="box fragment" style="width: 37%; right: 60px; top: 100px;">
                             <ul>
-                                <li>Default enum size is <code>sizeof(int)</code></li>
-                                <li><code>Enum</code> underlying type is extended automatically if values greater than <code>int</code> are provided</li>
-                                <li>To save some memory we can define the underlying type using inheritance</li>
-                                <li>A compiler will not allow defining value greater than the defined base can hold</li>
-                                <li>Inheritance work on both <code>enum</code> and <code>enum class</code></li>
+                                <li class="fragment">Default enum size is <code>sizeof(int)</code></li>
+                                <li class="fragment"><code>Enum</code> underlying type is extended automatically if values greater than <code>int</code> are provided</li>
+                                <li class="fragment">To save some memory we can define the underlying type using inheritance</li>
+                                <li class="fragment">A compiler will not allow defining value greater than the defined base can hold</li>
+                                <li class="fragment">Inheritance work on both <code>enum</code> and <code>enum class</code></li>
                             </ul>
                         </div>
                         <a href="https://ideone.com/e.js/8sR1XK" style="font-size: 0.4em">Change the code in ideone.com</a>
@@ -385,10 +382,7 @@ auto isEven = [](int a) -> bool {
     return a % 2;
 }
                         </code></pre>
-                        <ul class="fragment">
-                            <li>Introduced to allow definition of the type returned from lambda functions</li>
-                            <li>From C++14 barely used</li>
-                        </ul>
+                        <p class="fragment">Introduced to allow definition of the type returned from lambda functions</p>
                     </section>
                     <section>
                         <h3>Deduction of a function returned type</h3>

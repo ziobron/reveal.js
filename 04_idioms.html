@@ -213,14 +213,13 @@ T* construct(T* t)
                 <section>
                     <section>
                         <h2>Task</h2>
-                        <p>Write a function that allows to insert only subclasses of Shape to the collection. Other parameter types should not compile. Use SFINAE. Find proper type_trait</p>
-                    </section>
-
-                    <section>
-                        <h2>Solution with <code>enable_if</code></h2>
-                    </section>
-                    <section>
-                        <h2>Solution with <code>constexpr if</code></h2>
+                        <p>Write a function that allows inserting only subclasses of Shape to the collection. Other parameter types should not compile. Use SFINAE. Find proper type_traits.</p>
+                        <p class="fragment">Hints:</p>
+                        <ul>
+                            <li class="fragment">std::is_base_of</li>
+                            <li class="fragment">std::remove_reference</li>
+                            <li class="fragment">std::remove_cv</li>
+                        </ul>
                     </section>
                 </section>
 

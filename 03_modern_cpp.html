@@ -185,12 +185,12 @@ struct Base {
     void d();
 };
                     </code></pre>
-                    <pre class="fragment" style="position: absolute; width: 60%; right: 0"><code class="cpp" data-trim data-line-numbers>
+                    <pre class="fragment" style="position: absolute; width: 60%; right: 0"><code class="cpp" data-trim data-line-numbers data-noescape>
 struct WithoutOverride : Base {
-    void a(); // overrides Base::a()
-    void b(); // doesn't override B::b() const
-    virtual void c(); // overrides B::c()
-    void d(); // doesn't override B::d()
+    void a(); <span class="fragment">// overrides Base::a()</span>
+    void b(); <span class="fragment">// doesn't override B::b() const</span>
+    virtual void c(); <span class="fragment">// overrides B::c()</span>
+    void d(); <span class="fragment">// doesn't override B::d()</span>
 };
                     </code></pre>
                     <pre class="fragment" style="position: absolute; width: 100%; top: 320px"><code class="cpp" data-trim data-line-numbers>
@@ -434,17 +434,17 @@ public:
     Bar(Type a, Type b) : values_{a, b} {}
 };
 
-Bar&lt;int&gt; c = {1, 2, 5, 51};   // calls std::initializer_list c-tor
-Bar&lt;int&gt; d{1, 2, 5, 51};      // calls std::initializer_list c-tor
-Bar&lt;int&gt; e = {1, 2};          // calls std::initializer_list c-tor
-Bar&lt;int&gt; f{1, 2};             // calls std::initializer_list c-tor
-Bar&lt;int&gt; g(1, 2);             // calls Bar(Type a, Type b) c-tor
-Bar&lt;int&gt; h = {};              // calls std::initializer_list c-tor
-                              // or default c-tor if exists
-Bar&lt;std::unique_ptr&lt;int&gt;&gt; c = {new int{1}, new int{2}};
-// error - std::unique_ptr is non-copyable
+<span class="fragment">Bar&lt;int&gt; c = {1, 2, 5, 51};</span>   <span class="fragment">// calls std::initializer_list c-tor</span>
+<span class="fragment">Bar&lt;int&gt; d{1, 2, 5, 51};</span>      <span class="fragment">// calls std::initializer_list c-tor</span>
+<span class="fragment">Bar&lt;int&gt; e = {1, 2};</span>          <span class="fragment">// calls std::initializer_list c-tor</span>
+<span class="fragment">Bar&lt;int&gt; f{1, 2};</span>             <span class="fragment">// calls std::initializer_list c-tor</span>
+<span class="fragment">Bar&lt;int&gt; g(1, 2);</span>             <span class="fragment">// calls Bar(Type a, Type b) c-tor</span>
+<span class="fragment">Bar&lt;int&gt; h = {};</span>              <span class="fragment">// calls std::initializer_list c-tor</span>
+                              <span class="fragment">// or default c-tor if exists</span>
+<span class="fragment">Bar&lt;std::unique_ptr&lt;int&gt;&gt; c = {new int{1}, new int{2}};</span>
+<span class="fragment">// error - std::unique_ptr is non-copyable</span>
                         </code></pre>
-                        <p>C-tor with <code>std::initializer_list</code> has greater priority if other c-tors match.</p>
+                        <p class="fragment">C-tor with <code>std::initializer_list</code> has greater priority if other c-tors match.</p>
                     </section>
                 </section>
 

@@ -147,7 +147,7 @@ class X : public Base {
         x.set_to_resourceless_state();
     }
 
-    X& operator=(X&&) {
+    X& operator=(X&& x) {
         Base::operator=(std::move(x));
         m_ = std::move(x.m_);
         x.set_to_resourceless_state();
@@ -329,14 +329,14 @@ int main() {
                         <h2><code>decltype((expr))</code> with parentheses</h2>
                         <pre><code class="cpp" data-trim>
                             int x;
-                            decltype(x) y = x;      // int y = x;
-                            auto z = x;             // int z = x;
+                            auto y = x;             // int y = x;
+                            decltype(x) z = x;      // int z = x;
 
                             int a;
-                            decltype((a)) b = a;    // int& b = a;
-                            auto c = (a);           // int c = a;
+                            auto b = (a);           // int b = a;
+                            decltype((a)) c = a;    // int& c = a;
 
-                            int&& d();
+                            int d();
                             auto e = d();           // int e = d();
                             decltype(d()) f = d();  // int&& f = d();
 
@@ -344,7 +344,6 @@ int main() {
                                 int x = 0;
                                 return x;           // returns int
                             }
-                        
                             decltype(auto) f2() {
                                 int x = 0;
                                 return (x);         // returns int&
